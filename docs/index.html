@@ -1,0 +1,1691 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PROPHET FIELD</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0a08;
+  --surface: #16120e;
+  --surface2: #1e1812;
+  --border: #3a2e20;
+  --gold: #c9a84c;
+  --gold2: #e8c870;
+  --red: #c0392b;
+  --red2: #e74c3c;
+  --blue: #2471a3;
+  --blue2: #3498db;
+  --green: #1e8449;
+  --green2: #27ae60;
+  --purple: #7d3c98;
+  --purple2: #9b59b6;
+  --text: #e8dcc8;
+  --muted: #7a6a50;
+  --glow-gold: 0 0 15px rgba(201,168,76,0.5);
+  --glow-red: 0 0 15px rgba(192,57,43,0.5);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Crimson Pro', serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Parchment texture overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ==================== SCREENS ==================== */
+.screen { display: none; min-height: 100vh; position: relative; z-index: 1; }
+.screen.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+/* ==================== LOBBY ==================== */
+#screen-lobby {
+  padding: 2rem;
+  background: radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.07) 0%, transparent 70%);
+}
+
+.game-logo {
+  font-family: 'Cinzel', serif;
+  font-weight: 900;
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  letter-spacing: 0.15em;
+  color: var(--gold2);
+  text-shadow: var(--glow-gold), 0 0 80px rgba(201,168,76,0.15);
+  text-align: center;
+  line-height: 1;
+  margin-bottom: 0.2em;
+}
+
+.game-tagline {
+  font-family: 'Crimson Pro', serif;
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--muted);
+  text-align: center;
+  letter-spacing: 0.2em;
+  margin-bottom: 3rem;
+}
+
+.lobby-panels {
+  display: flex;
+  gap: 2rem;
+  max-width: 860px;
+  width: 100%;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 1.8rem;
+  position: relative;
+  flex: 1;
+  min-width: 260px;
+  max-width: 380px;
+}
+
+.panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.panel-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 1.2rem;
+}
+
+.field { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem; }
+
+label {
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  text-transform: uppercase;
+  font-family: 'Cinzel', serif;
+}
+
+input[type="text"] {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: 'Crimson Pro', serif;
+  font-size: 1.1rem;
+  padding: 0.65rem 0.9rem;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.2s;
+}
+input[type="text"]:focus { border-color: var(--gold); }
+input[type="text"]::placeholder { color: var(--muted); opacity: 0.6; }
+
+.btn {
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 0.85rem 1.5rem;
+  cursor: pointer;
+  border: none;
+  width: 100%;
+  transition: all 0.2s;
+}
+
+.btn-gold {
+  background: linear-gradient(135deg, #c9a84c, #e8c870);
+  color: #0d0a08;
+}
+.btn-gold:hover { box-shadow: var(--glow-gold); filter: brightness(1.1); }
+.btn-gold:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.btn-outline {
+  background: transparent;
+  color: var(--gold);
+  border: 1px solid var(--gold);
+}
+.btn-outline:hover { background: rgba(201,168,76,0.08); box-shadow: var(--glow-gold); }
+
+.btn-danger {
+  background: transparent;
+  color: var(--red2);
+  border: 1px solid var(--red2);
+  font-size: 0.65rem;
+}
+.btn-danger:hover { background: rgba(192,57,43,0.1); }
+
+.divider {
+  text-align: center;
+  color: var(--muted);
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  width: 100%;
+  position: relative;
+  padding: 0.5rem 0;
+}
+.divider::before, .divider::after {
+  content: '';
+  position: absolute;
+  top: 50%; width: 35%;
+  height: 1px;
+  background: var(--border);
+}
+.divider::before { left: 0; }
+.divider::after { right: 0; }
+
+#status-msg {
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 1rem;
+  min-height: 1.4em;
+  font-style: italic;
+}
+#status-msg.ok { color: var(--green2); }
+#status-msg.err { color: var(--red2); }
+
+/* ==================== WAITING ROOM ==================== */
+#screen-waiting {
+  padding: 2rem;
+  gap: 1.5rem;
+}
+
+.waiting-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.8rem;
+  color: var(--gold2);
+  letter-spacing: 0.2em;
+  text-align: center;
+}
+
+.room-code-box {
+  border: 1px solid var(--gold);
+  padding: 1.2rem 2.5rem;
+  text-align: center;
+  background: var(--surface);
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+.room-code-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.room-code-box:hover { background: rgba(201,168,76,0.06); box-shadow: var(--glow-gold); }
+.room-code-label { font-size: 0.65rem; letter-spacing: 0.2em; color: var(--muted); font-family: 'Cinzel', serif; margin-bottom: 0.4rem; }
+.room-code-val { font-family: 'Cinzel', serif; font-size: 1.8rem; font-weight: 700; color: var(--gold2); letter-spacing: 0.3em; }
+
+.player-list-wrap { width: 100%; max-width: 480px; }
+.player-list-title { font-family: 'Cinzel', serif; font-size: 0.65rem; letter-spacing: 0.2em; color: var(--muted); margin-bottom: 0.6rem; text-align: center; }
+.player-list { display: flex; flex-direction: column; gap: 0.4rem; max-height: 300px; overflow-y: auto; }
+.player-item {
+  display: flex; align-items: center; gap: 0.7rem;
+  padding: 0.5rem 0.8rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-size: 0.95rem;
+}
+.player-item .badge {
+  font-family: 'Cinzel', serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  padding: 0.15rem 0.4rem;
+  border: 1px solid;
+}
+.badge-host { color: var(--gold); border-color: var(--gold); }
+.badge-you { color: var(--blue2); border-color: var(--blue2); }
+.badge-ready { color: var(--green2); border-color: var(--green2); }
+
+.waiting-actions { display: flex; gap: 0.8rem; width: 100%; max-width: 480px; }
+
+.pulse { animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
+
+/* ==================== GAME SCREEN ==================== */
+#screen-game {
+  display: none;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 0;
+  justify-content: flex-start;
+}
+#screen-game.active { display: flex; }
+
+/* Top bar */
+.game-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 1rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.game-topbar-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+}
+.turn-indicator {
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  padding: 0.3rem 0.8rem;
+  border: 1px solid var(--gold);
+  color: var(--gold2);
+}
+.turn-indicator.my-turn {
+  background: rgba(201,168,76,0.15);
+  border-color: var(--gold2);
+  box-shadow: var(--glow-gold);
+  animation: myTurnPulse 1s ease-in-out infinite;
+}
+@keyframes myTurnPulse { 0%,100%{box-shadow:var(--glow-gold);} 50%{box-shadow:none;} }
+
+/* Main game area */
+.game-main {
+  display: grid;
+  grid-template-columns: 220px 1fr 220px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Players sidebar */
+.players-sidebar {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.players-sidebar.right { border-right: none; border-left: 1px solid var(--border); }
+
+.player-card {
+  border: 1px solid var(--border);
+  padding: 0.6rem 0.7rem;
+  background: var(--bg);
+  position: relative;
+  transition: all 0.2s;
+}
+.player-card.active-turn {
+  border-color: var(--gold);
+  background: rgba(201,168,76,0.05);
+}
+.player-card.dead { opacity: 0.35; }
+.player-card.me { border-color: var(--blue2); }
+
+.pcard-name {
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+  margin-bottom: 0.4rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pcard-name.me-label { color: var(--blue2); }
+
+.stat-row { display: flex; flex-direction: column; gap: 0.25rem; }
+.stat-line { display: flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; }
+.stat-icon { width: 12px; font-size: 0.65rem; text-align: center; flex-shrink: 0; }
+.stat-bar-wrap { flex: 1; height: 5px; background: var(--border); overflow: hidden; }
+.stat-bar { height: 100%; transition: width 0.4s; }
+.stat-bar.hp { background: var(--red2); }
+.stat-bar.mp { background: var(--blue2); }
+.stat-bar.gold-bar { background: var(--gold); }
+.stat-val { font-size: 0.7rem; color: var(--text); min-width: 28px; text-align: right; }
+
+.hand-count {
+  font-size: 0.65rem;
+  color: var(--muted);
+  margin-top: 0.3rem;
+  font-style: italic;
+}
+
+/* Center battle area */
+.battle-area {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Battle log */
+.battle-log {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.log-entry {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  padding: 0.2rem 0;
+  border-bottom: 1px solid rgba(58,46,32,0.4);
+  animation: fadeInLog 0.3s ease;
+}
+@keyframes fadeInLog { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:none; } }
+.log-entry .log-actor { font-family: 'Cinzel', serif; font-size: 0.75rem; color: var(--gold); }
+.log-entry .log-target { font-family: 'Cinzel', serif; font-size: 0.75rem; color: var(--red2); }
+.log-entry .log-card { color: var(--gold2); font-style: italic; }
+.log-entry.system { color: var(--muted); font-style: italic; font-size: 0.8rem; }
+.log-entry.damage { color: var(--red2); }
+.log-entry.heal { color: var(--green2); }
+.log-entry.defend { color: var(--blue2); }
+
+/* Defense window */
+.defense-window {
+  background: rgba(36,113,163,0.12);
+  border: 1px solid var(--blue2);
+  border-radius: 0;
+  padding: 0.7rem 1rem;
+  margin: 0 0.8rem;
+  display: none;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.defense-window.active { display: flex; }
+.defense-window-text { font-size: 0.85rem; flex: 1; }
+.defense-window-text strong { color: var(--red2); font-family: 'Cinzel', serif; font-size: 0.75rem; }
+.defense-timer {
+  font-family: 'Cinzel', serif;
+  font-size: 1.2rem;
+  color: var(--blue2);
+  min-width: 2ch;
+  text-align: center;
+  font-weight: 700;
+}
+
+/* My hand area */
+.my-area {
+  background: var(--surface2);
+  border-top: 1px solid var(--border);
+  padding: 0.8rem;
+  flex-shrink: 0;
+}
+
+.my-stats-row {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 0.7rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.my-stat {
+  display: flex; align-items: center; gap: 0.4rem;
+  font-family: 'Cinzel', serif; font-size: 0.75rem;
+}
+.my-stat-icon { font-size: 0.9rem; }
+.my-stat-val { color: var(--gold2); font-weight: 700; }
+
+.my-name-badge {
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  color: var(--blue2);
+  margin-right: auto;
+}
+
+.hand-area {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.3rem;
+  min-height: 110px;
+  align-items: flex-end;
+}
+
+/* Card styles */
+.card {
+  width: 72px;
+  min-width: 72px;
+  height: 100px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+  flex-shrink: 0;
+  user-select: none;
+}
+.card:hover { transform: translateY(-8px); border-color: var(--gold); z-index: 5; }
+.card.selected { transform: translateY(-12px); border-color: var(--gold2); box-shadow: var(--glow-gold); z-index: 6; }
+.card.defense-card:hover { border-color: var(--blue2); }
+.card.defense-card.selected { border-color: var(--blue2); box-shadow: 0 0 15px rgba(52,152,219,0.5); }
+.card.disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+
+.card-top {
+  padding: 0.25rem 0.3rem;
+  font-size: 0.55rem;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.card-center {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+.card-bottom {
+  padding: 0.2rem 0.3rem;
+  font-size: 0.6rem;
+  text-align: center;
+  border-top: 1px solid var(--border);
+  line-height: 1.2;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+.card-val {
+  font-family: 'Cinzel', serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--gold2);
+}
+
+/* Card type colors */
+.card[data-type="attack"] .card-top { color: var(--red2); }
+.card[data-type="attack"] { border-color: rgba(192,57,43,0.4); }
+.card[data-type="defense"] .card-top { color: var(--blue2); }
+.card[data-type="defense"] { border-color: rgba(36,113,163,0.4); }
+.card[data-type="item"] .card-top { color: var(--green2); }
+.card[data-type="item"] { border-color: rgba(30,132,73,0.4); }
+.card[data-type="miracle"] .card-top { color: var(--purple2); }
+.card[data-type="miracle"] { border-color: rgba(125,60,152,0.4); }
+
+/* Action buttons */
+.action-bar {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.7rem;
+  flex-wrap: wrap;
+}
+
+.btn-small {
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border: 1px solid;
+  background: transparent;
+  transition: all 0.15s;
+  text-transform: uppercase;
+}
+.btn-attack { color: var(--red2); border-color: var(--red2); }
+.btn-attack:hover { background: rgba(192,57,43,0.1); box-shadow: var(--glow-red); }
+.btn-defend { color: var(--blue2); border-color: var(--blue2); }
+.btn-defend:hover { background: rgba(52,152,219,0.1); }
+.btn-pray { color: var(--gold); border-color: var(--gold); }
+.btn-pray:hover { background: rgba(201,168,76,0.1); box-shadow: var(--glow-gold); }
+.btn-endturn { color: var(--green2); border-color: var(--green2); }
+.btn-endturn:hover { background: rgba(39,174,96,0.1); }
+.btn-small:disabled { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
+
+.target-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  padding: 0.5rem 0;
+  align-self: center;
+}
+
+/* Target select */
+.target-select {
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 0.4rem 0.6rem;
+  cursor: pointer;
+  outline: none;
+}
+.target-select:focus { border-color: var(--gold); }
+
+/* Floating damage numbers */
+.float-dmg {
+  position: fixed;
+  font-family: 'Cinzel', serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  pointer-events: none;
+  z-index: 999;
+  animation: floatUp 1.2s ease forwards;
+}
+@keyframes floatUp {
+  0% { opacity:1; transform:translateY(0) scale(1); }
+  100% { opacity:0; transform:translateY(-60px) scale(0.7); }
+}
+
+/* Overlay */
+#overlay {
+  position: fixed; inset: 0;
+  background: rgba(13,10,8,0.92);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  gap: 1rem;
+}
+#overlay.active { display: flex; }
+.overlay-title {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.8rem, 5vw, 3.5rem);
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  text-align: center;
+}
+.overlay-sub {
+  color: var(--muted);
+  font-size: 1rem;
+  font-style: italic;
+  letter-spacing: 0.1em;
+  text-align: center;
+}
+
+/* Toast */
+#toast {
+  position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+  background: var(--surface);
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  padding: 0.5rem 1.2rem;
+  z-index: 200;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  white-space: nowrap;
+}
+#toast.show { opacity: 1; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); }
+
+/* Responsive */
+@media (max-width: 700px) {
+  .game-main { grid-template-columns: 1fr; grid-template-rows: auto 1fr auto; }
+  .players-sidebar { flex-direction: row; overflow-x: auto; overflow-y: hidden; max-height: 120px; border-right: none; border-bottom: 1px solid var(--border); }
+  .players-sidebar.right { display: none; }
+  .player-card { min-width: 130px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== LOBBY ==================== -->
+<div id="screen-lobby" class="screen active">
+  <div class="game-logo">PROPHET<br>FIELD</div>
+  <div class="game-tagline">— The battle for divine succession begins —</div>
+  <div class="lobby-panels">
+    <div class="panel">
+      <div class="panel-title">Your Identity</div>
+      <div class="field">
+        <label>Prophet Name</label>
+        <input type="text" id="inp-name" placeholder="Prophet of Dawn" maxlength="16">
+      </div>
+      <div class="panel-title" style="margin-top:1rem;">Create Room</div>
+      <div class="field">
+        <label>Room Name</label>
+        <input type="text" id="inp-room-create" placeholder="divine-grounds" maxlength="20">
+      </div>
+      <button class="btn btn-gold" onclick="createRoom()">OPEN SANCTUARY</button>
+    </div>
+    <div class="panel">
+      <div class="panel-title" style="margin-top:0">Join Room</div>
+      <div style="color:var(--muted);font-size:0.85rem;font-style:italic;margin-bottom:1rem;">Enter the room name your opponent shared.</div>
+      <div class="field">
+        <label>Room Name</label>
+        <input type="text" id="inp-room-join" placeholder="divine-grounds" maxlength="20">
+      </div>
+      <button class="btn btn-outline" onclick="joinRoom()">ENTER SANCTUARY</button>
+    </div>
+  </div>
+  <div id="status-msg">Awaiting the call of fate...</div>
+</div>
+
+<!-- ==================== WAITING ROOM ==================== -->
+<div id="screen-waiting" class="screen">
+  <div class="waiting-title">SANCTUARY</div>
+  <div class="room-code-box" onclick="copyRoom()" title="Click to copy">
+    <div class="room-code-label">ROOM NAME — CLICK TO COPY</div>
+    <div class="room-code-val" id="waiting-room-display">—</div>
+  </div>
+  <div class="player-list-wrap">
+    <div class="player-list-title">PROPHETS GATHERED</div>
+    <div class="player-list" id="waiting-player-list"></div>
+  </div>
+  <div class="waiting-actions">
+    <button class="btn btn-gold" id="btn-start" onclick="hostStartGame()" style="display:none;">BEGIN PROPHECY</button>
+    <button class="btn btn-danger" onclick="leaveRoom()">DEPART</button>
+  </div>
+  <div id="status-msg-wait" style="color:var(--muted);font-size:0.85rem;font-style:italic;text-align:center;" class="pulse">Waiting for prophets to gather...</div>
+</div>
+
+<!-- ==================== GAME SCREEN ==================== -->
+<div id="screen-game" class="screen">
+  <div class="game-topbar">
+    <div class="game-topbar-title">PROPHET FIELD</div>
+    <div class="turn-indicator" id="turn-indicator">—</div>
+    <button class="btn-small btn-danger" style="width:auto;" onclick="leaveRoom()">LEAVE</button>
+  </div>
+  <div class="game-main">
+    <!-- Left players -->
+    <div class="players-sidebar" id="sidebar-left"></div>
+    <!-- Center -->
+    <div class="battle-area">
+      <div class="battle-log" id="battle-log"></div>
+      <!-- Defense window -->
+      <div class="defense-window" id="defense-window">
+        <div class="defense-window-text">
+          <strong id="def-attacker">—</strong> attacks <strong id="def-target-name">—</strong> with <span id="def-card-name" style="color:var(--gold2);font-style:italic;">—</span>
+          for <strong id="def-dmg" style="color:var(--red2);">—</strong> damage!
+          <br><span style="color:var(--blue2);font-size:0.8rem;">Play a defense card to block!</span>
+        </div>
+        <div class="defense-timer" id="def-timer">3</div>
+      </div>
+      <!-- My area -->
+      <div class="my-area">
+        <div class="my-stats-row">
+          <span class="my-name-badge" id="my-name-badge">—</span>
+          <span class="my-stat"><span class="my-stat-icon">❤️</span><span class="my-stat-val" id="my-hp">—</span></span>
+          <span class="my-stat"><span class="my-stat-icon">🔮</span><span class="my-stat-val" id="my-mp">—</span></span>
+          <span class="my-stat"><span class="my-stat-icon">💰</span><span class="my-stat-val" id="my-gold">—</span></span>
+          <span class="my-stat" style="color:var(--muted);font-size:0.75rem;" id="my-hand-count"></span>
+        </div>
+        <div class="hand-area" id="hand-area"></div>
+        <div class="action-bar" id="action-bar">
+          <span class="target-label">Target:</span>
+          <select class="target-select" id="target-select"></select>
+          <button class="btn-small btn-attack" id="btn-attack" onclick="doAttack()">⚔ Attack</button>
+          <button class="btn-small btn-pray" onclick="doPray()">🙏 Pray</button>
+          <button class="btn-small btn-endturn" onclick="doEndTurn()">↩ End Turn</button>
+        </div>
+      </div>
+    </div>
+    <!-- Right players -->
+    <div class="players-sidebar right" id="sidebar-right"></div>
+  </div>
+</div>
+
+<!-- Overlay (win/lose) -->
+<div id="overlay">
+  <div class="overlay-title" id="overlay-title">—</div>
+  <div class="overlay-sub" id="overlay-sub">—</div>
+  <button class="btn btn-gold" style="max-width:220px;margin-top:1rem;" onclick="leaveRoom()">RETURN TO LOBBY</button>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ================================================================
+// PROPHET FIELD — Phase 1
+// Architecture: Host-relay P2P via PeerJS
+// Host manages all game state, guests send actions
+// ================================================================
+
+// ---- CARD DEFINITIONS ----
+const CARD_POOL = [
+  // ATTACK
+  { id:'atk_sword',    type:'attack',  name:'Iron Sword',     emoji:'⚔️',  atk:8,  desc:'Basic attack',         cost:0 },
+  { id:'atk_spear',    type:'attack',  name:'Holy Spear',     emoji:'🔱',  atk:12, desc:'Piercing strike',      cost:0 },
+  { id:'atk_fire',     type:'attack',  name:'Flame Bolt',     emoji:'🔥',  atk:15, desc:'Burns the target',     cost:0 },
+  { id:'atk_arrow',    type:'attack',  name:'Dark Arrow',     emoji:'🏹',  atk:10, desc:'Ranged attack',        cost:0 },
+  { id:'atk_thunder',  type:'attack',  name:'Thunder',        emoji:'⚡',  atk:18, desc:'Lightning strike',     cost:0 },
+  { id:'atk_frost',    type:'attack',  name:'Frost Shard',    emoji:'❄️',  atk:13, desc:'Cold as death',        cost:0 },
+  { id:'atk_poison',   type:'attack',  name:'Poison Fang',    emoji:'🐍',  atk:9,  desc:'Venomous bite',        cost:0 },
+  { id:'atk_giant',    type:'attack',  name:'Giant\'s Fist',  emoji:'👊',  atk:22, desc:'Massive blow',         cost:0 },
+  // DEFENSE
+  { id:'def_shield',   type:'defense', name:'Iron Shield',    emoji:'🛡️',  def:10, desc:'Blocks damage',        cost:0 },
+  { id:'def_barrier',  type:'defense', name:'Holy Barrier',   emoji:'🔵',  def:15, desc:'Divine protection',    cost:0 },
+  { id:'def_reflect',  type:'defense', name:'Mirror Ward',    emoji:'🪞',  def:8,  reflect:true, desc:'Reflects some damage', cost:0 },
+  { id:'def_dodge',    type:'defense', name:'Shadow Step',    emoji:'💨',  def:999,desc:'Evade completely',     cost:0 },
+  { id:'def_stone',    type:'defense', name:'Stone Wall',     emoji:'🪨',  def:20, desc:'Sturdy defense',       cost:0 },
+  // ITEM
+  { id:'itm_potion',   type:'item',    name:'Elixir',         emoji:'🧪',  heal:20,desc:'Restore 20 HP',        cost:0 },
+  { id:'itm_mana',     type:'item',    name:'Mana Crystal',   emoji:'💎',  mp:15,  desc:'Restore 15 MP',        cost:0 },
+  { id:'itm_coins',    type:'item',    name:'Gold Pouch',     emoji:'💰',  gold:15,desc:'Gain 15 Gold',         cost:0 },
+  { id:'itm_fullheal', type:'item',    name:'Ambrosia',       emoji:'✨',  heal:40,desc:'Restore 40 HP',        cost:0 },
+  { id:'itm_trade',    type:'item',    name:'Exchange',       emoji:'🔄',  exchange:true, desc:'Convert 10 HP→MP or MP→HP', cost:0 },
+  // MIRACLE
+  { id:'mir_smite',    type:'miracle', name:'Divine Smite',   emoji:'☀️',  atk:25, mpCost:15, desc:'Costs 15 MP, deals 25 dmg', cost:0 },
+  { id:'mir_plague',   type:'miracle', name:'Plague',         emoji:'💀',  aoe:8,  mpCost:20, desc:'Costs 20 MP, hits ALL enemies 8 dmg', cost:0 },
+  { id:'mir_bless',    type:'miracle', name:'Blessing',       emoji:'🙌',  heal:30,mpCost:12, desc:'Costs 12 MP, heal 30 HP', cost:0 },
+  { id:'mir_drain',    type:'miracle', name:'Soul Drain',     emoji:'🌑',  drain:15,mpCost:10,desc:'Costs 10 MP, steal 15 HP from target', cost:0 },
+];
+
+const WEIGHTS = {
+  attack:  35,
+  defense: 25,
+  item:    25,
+  miracle: 15,
+};
+
+function drawRandomCard() {
+  const r = Math.random() * 100;
+  let cumulative = 0;
+  let chosenType = 'attack';
+  for (const [type, w] of Object.entries(WEIGHTS)) {
+    cumulative += w;
+    if (r < cumulative) { chosenType = type; break; }
+  }
+  const pool = CARD_POOL.filter(c => c.type === chosenType);
+  return { ...pool[Math.floor(Math.random() * pool.length)], uid: Math.random().toString(36).substr(2,8) };
+}
+
+function drawHand(n = 6) {
+  return Array.from({ length: n }, drawRandomCard);
+}
+
+// ---- GAME CONSTANTS ----
+const INIT_HP = 100;
+const INIT_MP = 30;
+const INIT_GOLD = 20;
+const PRAY_CARDS = 1;       // cards drawn when praying
+const MAX_HAND = 18;
+const DEFENSE_WINDOW_MS = 4000;
+const MAX_PLAYERS = 9;
+
+// ---- STATE ----
+let myName = '', roomName = '', isHost = false;
+let myId = null; // PeerJS peer ID (assigned by PeerJS)
+let myPlayerId = null; // stable player slot index
+let peer = null, hostConn = null;
+let guestConns = {}; // hostId → DataConnection (host only)
+let sigMode = 'peerjs';
+
+// Game state (authoritative on host, mirrored on guests)
+let GS = null; // { players:[], turnIndex:0, phase:'waiting'|'playing'|'over', round:0 }
+// players: { id, name, hp, mp, gold, hand:[], alive:true, peerId }
+
+let defenseTimer = null;
+let defenseTimeout = null;
+let pendingAttack = null; // { attackerId, targetId, cardUid, damage }
+
+// ---- PEER LOADING ----
+function loadPeerJS(cb) {
+  if (window.Peer) { cb(); return; }
+  const s = document.createElement('script');
+  s.src = 'https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js';
+  s.onload = cb;
+  s.onerror = () => { setStatus('PeerJS load failed', 'err'); };
+  document.head.appendChild(s);
+}
+
+// ---- UI HELPERS ----
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function setStatus(msg, cls = '') {
+  const el = document.getElementById('status-msg');
+  if (el) { el.textContent = msg; el.className = cls; }
+}
+function setStatusWait(msg) {
+  const el = document.getElementById('status-msg-wait');
+  if (el) el.textContent = msg;
+}
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2500);
+}
+function copyRoom() {
+  navigator.clipboard?.writeText(roomName).then(() => toast('Room name copied!'));
+}
+
+// ---- LOBBY ----
+function getMyName() { return document.getElementById('inp-name').value.trim() || 'Prophet'; }
+
+function createRoom() {
+  myName = getMyName();
+  const room = document.getElementById('inp-room-create').value.trim();
+  if (!room) { setStatus('Enter a room name', 'err'); return; }
+  roomName = room;
+  isHost = true;
+  loadPeerJS(setupHost);
+}
+
+function joinRoom() {
+  myName = getMyName();
+  const room = document.getElementById('inp-room-join').value.trim();
+  if (!room) { setStatus('Enter a room name to join', 'err'); return; }
+  roomName = room;
+  isHost = false;
+  loadPeerJS(setupGuest);
+}
+
+// ---- PEER ID SCHEME ----
+function hostPeerId(room) {
+  return 'pf-host-' + room.toLowerCase().replace(/[^a-z0-9]/g,'-').substring(0,20);
+}
+
+// ---- HOST SETUP ----
+function setupHost() {
+  const id = hostPeerId(roomName);
+  peer = new Peer(id);
+  peer.on('open', (pid) => {
+    myId = pid;
+    setStatus('Sanctuary opened!', 'ok');
+    document.getElementById('waiting-room-display').textContent = roomName;
+    document.getElementById('btn-start').style.display = 'block';
+    // Init GS with host as first player
+    GS = initGS();
+    addPlayer(myId, myName);
+    renderWaitingList();
+    showScreen('screen-waiting');
+  });
+  peer.on('connection', (conn) => {
+    guestConns[conn.peer] = conn;
+    conn.on('open', () => {
+      // Send current waiting state
+      conn.send({ type: 'welcome', roomName });
+    });
+    conn.on('data', (d) => handleHostReceive(conn.peer, d));
+    conn.on('close', () => {
+      delete guestConns[conn.peer];
+      if (GS && GS.phase === 'waiting') {
+        removePlayer(conn.peer);
+        broadcastAll({ type: 'gs_update', gs: sanitizeGS() });
+        renderWaitingList();
+      } else if (GS && GS.phase === 'playing') {
+        markPlayerDead(conn.peer, 'disconnected');
+        broadcastAll({ type: 'gs_update', gs: sanitizeGS() });
+        renderGame();
+        checkVictory();
+      }
+    });
+    conn.on('error', () => { delete guestConns[conn.peer]; });
+  });
+  peer.on('error', (e) => {
+    if (e.type === 'unavailable-id') setStatus('Room name taken. Try another.', 'err');
+    else setStatus('Error: ' + e.message, 'err');
+  });
+}
+
+// ---- GUEST SETUP ----
+let guestRetry = 0;
+function setupGuest() {
+  guestRetry = 0;
+  peer = new Peer();
+  peer.on('open', (pid) => {
+    myId = pid;
+    connectToHost();
+  });
+  peer.on('error', e => setStatus('Error: ' + e.message, 'err'));
+}
+
+function connectToHost() {
+  guestRetry++;
+  setStatus('Connecting... (' + guestRetry + '/6)', '');
+  const c = peer.connect(hostPeerId(roomName), { reliable: true });
+  let opened = false;
+  c.on('open', () => {
+    opened = true;
+    hostConn = c;
+    hostConn.send({ type: 'join', name: myName, peerId: myId });
+    setStatus('Connected!', 'ok');
+  });
+  c.on('data', handleGuestReceive);
+  c.on('close', () => {
+    if (!opened && guestRetry < 6) { setTimeout(connectToHost, 1200); return; }
+    if (GS && GS.phase === 'playing') { toast('Lost connection to host'); leaveRoom(); }
+  });
+  c.on('error', () => {
+    if (guestRetry < 6) setTimeout(connectToHost, 1200);
+    else setStatus('Could not reach room. Make sure host created it first.', 'err');
+  });
+}
+
+// ---- HOST: RECEIVE FROM GUESTS ----
+function handleHostReceive(peerId, d) {
+  if (d.type === 'join') {
+    if (GS.phase !== 'waiting') { guestConns[peerId]?.send({ type: 'err', msg: 'Game already started' }); return; }
+    if (GS.players.length >= MAX_PLAYERS) { guestConns[peerId]?.send({ type: 'err', msg: 'Room full' }); return; }
+    addPlayer(peerId, d.name);
+    broadcastAll({ type: 'gs_update', gs: sanitizeGS() });
+    renderWaitingList();
+  }
+  if (d.type === 'action') {
+    processAction(peerId, d.action);
+  }
+}
+
+// ---- GUEST: RECEIVE FROM HOST ----
+function handleGuestReceive(d) {
+  if (d.type === 'welcome') {
+    document.getElementById('waiting-room-display').textContent = d.roomName || roomName;
+    showScreen('screen-waiting');
+  }
+  if (d.type === 'gs_update') {
+    GS = d.gs;
+    myPlayerId = GS.players.findIndex(p => p.peerId === myId);
+    if (GS.phase === 'waiting') renderWaitingList();
+    else if (GS.phase === 'playing') { renderGame(); }
+    else if (GS.phase === 'over') showGameOver();
+  }
+  if (d.type === 'err') { toast(d.msg); }
+  if (d.type === 'attack_window') {
+    pendingAttack = d;
+    showDefenseWindow(d);
+  }
+  if (d.type === 'attack_resolved') {
+    clearDefenseWindow();
+    applyAttackResult(d);
+  }
+  if (d.type === 'started') {
+    // GS comes via gs_update
+  }
+}
+
+// ---- GS HELPERS ----
+function initGS() {
+  return { players: [], turnIndex: 0, phase: 'waiting', round: 0, hostPeerId: myId };
+}
+
+function addPlayer(peerId, name) {
+  GS.players.push({
+    peerId, name,
+    hp: INIT_HP, mp: INIT_MP, gold: INIT_GOLD,
+    hand: drawHand(6),
+    alive: true,
+  });
+}
+
+function removePlayer(peerId) {
+  GS.players = GS.players.filter(p => p.peerId !== peerId);
+}
+
+function markPlayerDead(peerId, reason) {
+  const p = GS.players.find(p => p.peerId === peerId);
+  if (p) { p.alive = false; p.hp = 0; }
+  addLog({ type: 'system', text: (p?.name || '?') + ' has left the field.' });
+}
+
+// Remove hand from GS before sending to guests (privacy) — send only hand count
+function sanitizeGS() {
+  return {
+    ...GS,
+    players: GS.players.map(p => ({
+      ...p,
+      hand: p.hand.map(() => null), // hide cards
+      handCount: p.hand.length,
+    })),
+  };
+}
+
+// Host keeps full GS; guests get sanitized. My own hand is sent separately.
+function broadcastAll(msg) {
+  // Send sanitized GS to all guests, then send personal hand to each
+  Object.entries(guestConns).forEach(([peerId, conn]) => {
+    if (msg.type === 'gs_update') {
+      const playerIdx = GS.players.findIndex(p => p.peerId === peerId);
+      const personalGS = {
+        ...msg.gs,
+        players: msg.gs.players.map((p, i) => {
+          if (p.peerId === peerId) {
+            return { ...p, hand: GS.players[i]?.hand || [] };
+          }
+          return p;
+        }),
+      };
+      conn.send({ type: 'gs_update', gs: personalGS });
+    } else {
+      conn.send(msg);
+    }
+  });
+  // Host applies to self
+  if (msg.type === 'gs_update') {
+    myPlayerId = GS.players.findIndex(p => p.peerId === myId);
+    if (GS.phase === 'waiting') renderWaitingList();
+    else if (GS.phase === 'playing') renderGame();
+    else if (GS.phase === 'over') showGameOver();
+  }
+}
+
+// ---- WAITING ROOM UI ----
+function renderWaitingList() {
+  const list = document.getElementById('waiting-player-list');
+  if (!list || !GS) return;
+  list.innerHTML = '';
+  GS.players.forEach((p, i) => {
+    const el = document.createElement('div');
+    el.className = 'player-item';
+    const badges = [];
+    if (i === 0) badges.push('<span class="badge badge-host">HOST</span>');
+    if (p.peerId === myId) badges.push('<span class="badge badge-you">YOU</span>');
+    el.innerHTML = badges.join('') + '<span>' + escHtml(p.name) + '</span>';
+    list.appendChild(el);
+  });
+  if (isHost) {
+    const btn = document.getElementById('btn-start');
+    btn.textContent = GS.players.length >= 2 ? 'BEGIN PROPHECY (' + GS.players.length + ' players)' : 'BEGIN PROPHECY (need 2+)';
+    btn.disabled = GS.players.length < 2;
+  }
+}
+
+// ---- START GAME (HOST) ----
+function hostStartGame() {
+  if (!isHost || GS.players.length < 2) return;
+  GS.phase = 'playing';
+  GS.round = 1;
+  GS.turnIndex = 0;
+  GS.log = [];
+  addLog({ type: 'system', text: 'The prophecy has begun. Round 1.' });
+  broadcastAll({ type: 'gs_update', gs: sanitizeGS() });
+  showScreen('screen-game');
+}
+
+// ---- GAME RENDERING ----
+let logEntries = [];
+
+function addLog(entry) {
+  logEntries.push(entry);
+  if (logEntries.length > 80) logEntries.shift();
+  renderLog();
+}
+
+function renderLog() {
+  const el = document.getElementById('battle-log');
+  if (!el) return;
+  const wasAtBottom = el.scrollHeight - el.clientHeight <= el.scrollTop + 30;
+  el.innerHTML = logEntries.map(e => logHTML(e)).join('');
+  if (wasAtBottom) el.scrollTop = el.scrollHeight;
+}
+
+function logHTML(e) {
+  if (e.type === 'system') return `<div class="log-entry system">${escHtml(e.text)}</div>`;
+  if (e.type === 'attack') return `<div class="log-entry damage"><span class="log-actor">${escHtml(e.actor)}</span> strikes <span class="log-target">${escHtml(e.target)}</span> with <span class="log-card">${escHtml(e.card)}</span> — <strong style="color:var(--red2)">${e.dmg} dmg</strong>${e.blocked ? ' <span style="color:var(--blue2)">(blocked ' + e.blocked + ')</span>' : ''}${e.reflected ? ' <span style="color:var(--purple2)">(reflected ' + e.reflected + ')</span>' : ''}</div>`;
+  if (e.type === 'heal') return `<div class="log-entry heal"><span class="log-actor">${escHtml(e.actor)}</span> restores <strong style="color:var(--green2)">${e.val} HP</strong>${e.target && e.target !== e.actor ? ' on ' + escHtml(e.target) : ''}</div>`;
+  if (e.type === 'pray') return `<div class="log-entry system"><span class="log-actor">${escHtml(e.actor)}</span> prays and draws ${e.val} card${e.val>1?'s':''}.</div>`;
+  if (e.type === 'item') return `<div class="log-entry heal"><span class="log-actor">${escHtml(e.actor)}</span> uses <span class="log-card">${escHtml(e.card)}</span>${e.detail ? ' — ' + e.detail : ''}</div>`;
+  if (e.type === 'endturn') return `<div class="log-entry system" style="opacity:0.5"><span class="log-actor">${escHtml(e.actor)}</span> ends their turn. → <span style="color:var(--gold)">${escHtml(e.next)}</span>'s turn.</div>`;
+  if (e.type === 'dead') return `<div class="log-entry damage" style="font-weight:700"><span class="log-actor">${escHtml(e.name)}</span> has been eliminated!</div>`;
+  return `<div class="log-entry system">${escHtml(JSON.stringify(e))}</div>`;
+}
+
+function renderGame() {
+  if (!GS) return;
+  showScreen('screen-game');
+
+  const me = GS.players[myPlayerId >= 0 ? myPlayerId : 0];
+  if (!me) return;
+
+  // Topbar turn
+  const turnP = GS.players.find((p, i) => i === GS.turnIndex && p.alive);
+  const isMyTurn = turnP && turnP.peerId === myId;
+  const ti = document.getElementById('turn-indicator');
+  ti.textContent = turnP ? (isMyTurn ? '⚡ YOUR TURN' : turnP.name + "'s turn") : '—';
+  ti.className = 'turn-indicator' + (isMyTurn ? ' my-turn' : '');
+
+  // My stats
+  document.getElementById('my-name-badge').textContent = me.name;
+  document.getElementById('my-hp').textContent = me.hp;
+  document.getElementById('my-mp').textContent = me.mp;
+  document.getElementById('my-gold').textContent = me.gold;
+  document.getElementById('my-hand-count').textContent = '✋ ' + (me.hand?.filter(Boolean).length || 0) + ' cards';
+
+  // Split players across sidebars
+  const alive = GS.players.filter(p => p.alive);
+  const left = [], right = [];
+  alive.forEach((p, i) => { if (i % 2 === 0) left.push(p); else right.push(p); });
+  renderSidebar('sidebar-left', left);
+  renderSidebar('sidebar-right', right);
+
+  // Hand
+  renderHand(me, isMyTurn);
+
+  // Target select
+  renderTargetSelect(isMyTurn);
+
+  // Action buttons
+  setActionButtons(isMyTurn, me);
+}
+
+function renderSidebar(id, players) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = '';
+  players.forEach(p => {
+    const isMe = p.peerId === myId;
+    const isTurn = GS.players[GS.turnIndex]?.peerId === p.peerId;
+    const div = document.createElement('div');
+    div.className = 'player-card' + (isTurn ? ' active-turn' : '') + (!p.alive ? ' dead' : '') + (isMe ? ' me' : '');
+    const hpPct = Math.max(0, Math.min(100, p.hp));
+    const mpPct = Math.max(0, Math.min(100, p.mp / INIT_MP * 100));
+    const goldPct = Math.max(0, Math.min(100, p.gold / INIT_GOLD * 100));
+    div.innerHTML = `
+      <div class="pcard-name ${isMe ? 'me-label' : ''}">${escHtml(p.name)}${isMe ? ' (you)' : ''}</div>
+      <div class="stat-row">
+        <div class="stat-line"><span class="stat-icon">❤️</span><div class="stat-bar-wrap"><div class="stat-bar hp" style="width:${hpPct}%"></div></div><span class="stat-val">${p.hp}</span></div>
+        <div class="stat-line"><span class="stat-icon">🔮</span><div class="stat-bar-wrap"><div class="stat-bar mp" style="width:${mpPct}%"></div></div><span class="stat-val">${p.mp}</span></div>
+        <div class="stat-line"><span class="stat-icon">💰</span><div class="stat-bar-wrap"><div class="stat-bar gold-bar" style="width:${goldPct}%"></div></div><span class="stat-val">${p.gold}</span></div>
+      </div>
+      <div class="hand-count">✋ ${p.handCount ?? p.hand?.length ?? '?'} cards</div>
+    `;
+    el.appendChild(div);
+  });
+}
+
+let selectedCardUid = null;
+
+function renderHand(me, isMyTurn) {
+  const area = document.getElementById('hand-area');
+  if (!area) return;
+  area.innerHTML = '';
+  const hand = (me.hand || []).filter(Boolean);
+  hand.forEach(card => {
+    const div = document.createElement('div');
+    div.className = 'card' + (card.uid === selectedCardUid ? ' selected' : '') + (card.type === 'defense' ? ' defense-card' : '');
+    if (!isMyTurn && card.type !== 'defense') div.classList.add('disabled');
+    div.dataset.type = card.type;
+    const costLabel = card.mpCost ? `🔮${card.mpCost}` : '';
+    div.innerHTML = `
+      <div class="card-top">${card.type.toUpperCase()} ${costLabel}</div>
+      <div class="card-center">${card.emoji}</div>
+      <div class="card-bottom">
+        <div class="card-val">${cardStatLabel(card)}</div>
+        <div style="font-size:0.55rem;margin-top:0.1rem">${escHtml(card.name)}</div>
+      </div>
+    `;
+    div.onclick = () => selectCard(card.uid, card.type);
+    area.appendChild(div);
+  });
+}
+
+function cardStatLabel(card) {
+  if (card.atk) return '⚔ ' + card.atk;
+  if (card.def === 999) return '💨 DODGE';
+  if (card.def) return '🛡 ' + card.def;
+  if (card.heal) return '❤ +' + card.heal;
+  if (card.mp) return '🔮 +' + card.mp;
+  if (card.gold) return '💰 +' + card.gold;
+  if (card.aoe) return '💥 ' + card.aoe + ' AOE';
+  if (card.drain) return '🌑 ' + card.drain;
+  if (card.exchange) return '🔄 EX';
+  return '—';
+}
+
+function selectCard(uid, type) {
+  selectedCardUid = selectedCardUid === uid ? null : uid;
+  const me = GS.players[myPlayerId];
+  const isMyTurn = GS.players[GS.turnIndex]?.peerId === myId;
+  renderHand(me, isMyTurn);
+}
+
+function renderTargetSelect(isMyTurn) {
+  const sel = document.getElementById('target-select');
+  if (!sel) return;
+  const prev = sel.value;
+  sel.innerHTML = '';
+  GS.players.forEach((p, i) => {
+    if (!p.alive || p.peerId === myId) return;
+    const opt = document.createElement('option');
+    opt.value = p.peerId;
+    opt.textContent = p.name;
+    sel.appendChild(opt);
+  });
+  if (prev) sel.value = prev;
+}
+
+function setActionButtons(isMyTurn, me) {
+  document.getElementById('btn-attack').disabled = !isMyTurn || !selectedCardUid;
+  document.getElementById('btn-pray')?.setAttribute('disabled', !isMyTurn ? 'true' : null);
+}
+
+// ---- ACTIONS (sent to host or processed directly if host) ----
+function sendAction(action) {
+  if (isHost) {
+    processAction(myId, action);
+  } else {
+    hostConn?.send({ type: 'action', action });
+  }
+}
+
+function doAttack() {
+  if (!selectedCardUid) { toast('Select a card first'); return; }
+  const targetId = document.getElementById('target-select').value;
+  if (!targetId) { toast('Select a target'); return; }
+  sendAction({ type: 'attack', cardUid: selectedCardUid, targetId });
+  selectedCardUid = null;
+}
+
+function doPray() {
+  sendAction({ type: 'pray' });
+}
+
+function doEndTurn() {
+  sendAction({ type: 'end_turn' });
+}
+
+// ---- HOST: PROCESS ACTIONS ----
+function processAction(peerId, action) {
+  const playerIdx = GS.players.findIndex(p => p.peerId === peerId);
+  if (playerIdx < 0) return;
+  const player = GS.players[playerIdx];
+
+  if (action.type === 'attack') {
+    // Validate it's their turn
+    if (GS.turnIndex !== playerIdx) { guestConns[peerId]?.send({ type:'err', msg:'Not your turn' }); return; }
+    const card = player.hand.find(c => c && c.uid === action.cardUid);
+    if (!card) return;
+    if (card.type !== 'attack' && card.type !== 'miracle') { guestConns[peerId]?.send({ type:'err', msg:'Not an attack card' }); return; }
+
+    // Check MP cost
+    if (card.mpCost && player.mp < card.mpCost) {
+      guestConns[peerId]?.send({ type:'err', msg:'Not enough MP' });
+      if (isHost && peerId === myId) toast('Not enough MP');
+      return;
+    }
+
+    // Deduct MP
+    if (card.mpCost) player.mp -= card.mpCost;
+
+    // Remove card from hand
+    player.hand = player.hand.filter(c => !c || c.uid !== action.cardUid);
+
+    // AOE miracle (hits all enemies)
+    if (card.aoe) {
+      GS.players.forEach((p, i) => {
+        if (!p.alive || p.peerId === peerId) return;
+        p.hp = Math.max(0, p.hp - card.aoe);
+      });
+      addLog({ type:'attack', actor: player.name, target: 'ALL', card: card.name, dmg: card.aoe });
+      broadcastAll({ type:'gs_update', gs: sanitizeGS() });
+      GS.players.forEach(p => checkDeath(p));
+      broadcastAll({ type:'gs_update', gs: sanitizeGS() });
+      checkVictory();
+      return;
+    }
+
+    // Drain
+    if (card.drain) {
+      const target = GS.players.find(p => p.peerId === action.targetId && p.alive);
+      if (!target) return;
+      const actual = Math.min(card.drain, target.hp);
+      target.hp -= actual;
+      player.hp = Math.min(INIT_HP, player.hp + actual);
+      addLog({ type:'attack', actor: player.name, target: target.name, card: card.name, dmg: actual });
+      checkDeath(target);
+      broadcastAll({ type:'gs_update', gs: sanitizeGS() });
+      checkVictory();
+      return;
+    }
+
+    // Normal attack — open defense window
+    const dmg = card.atk;
+    const targetPlayer = GS.players.find(p => p.peerId === action.targetId && p.alive);
+    if (!targetPlayer) return;
+
+    pendingAttack = {
+      attackerId: peerId,
+      targetId: action.targetId,
+      cardUid: action.cardUid,
+      cardName: card.name,
+      cardEmoji: card.emoji,
+      damage: dmg,
+      attackerName: player.name,
+      targetName: targetPlayer.name,
+    };
+
+    // Broadcast attack window to target
+    broadcastAll({
+      type: 'attack_window',
+      ...pendingAttack,
+    });
+
+    // Start defense timer on host
+    startDefenseTimer();
+  }
+
+  if (action.type === 'defend') {
+    if (!pendingAttack || pendingAttack.targetId !== peerId) return;
+    const target = GS.players.find(p => p.peerId === peerId);
+    if (!target) return;
+    const defCard = target.hand.find(c => c && c.uid === action.cardUid);
+    if (!defCard || defCard.type !== 'defense') return;
+
+    target.hand = target.hand.filter(c => !c || c.uid !== action.cardUid);
+    resolveAttack(defCard);
+  }
+
+  if (action.type === 'pray') {
+    if (GS.turnIndex !== playerIdx) return;
+    if (player.hand.length >= MAX_HAND) {
+      guestConns[peerId]?.send({ type:'err', msg:'Hand is full' });
+      if (isHost && peerId === myId) toast('Hand is full');
+      return;
+    }
+    const drawn = Array.from({ length: PRAY_CARDS }, drawRandomCard);
+    drawn.forEach(c => player.hand.push(c));
+    addLog({ type:'pray', actor: player.name, val: PRAY_CARDS });
+    advanceTurn();
+    broadcastAll({ type:'gs_update', gs: sanitizeGS() });
+  }
+
+  if (action.type === 'end_turn') {
+    if (GS.turnIndex !== playerIdx) return;
+    const nextP = nextAliveName();
+    addLog({ type:'endturn', actor: player.name, next: nextP });
+    advanceTurn();
+    broadcastAll({ type:'gs_update', gs: sanitizeGS() });
+  }
+
+  if (action.type === 'use_item') {
+    if (GS.turnIndex !== playerIdx) return;
+    const card = player.hand.find(c => c && c.uid === action.cardUid);
+    if (!card || card.type !== 'item') return;
+    player.hand = player.hand.filter(c => !c || c.uid !== action.cardUid);
+
+    let detail = '';
+    if (card.heal) {
+      player.hp = Math.min(INIT_HP, player.hp + card.heal);
+      detail = '+' + card.heal + ' HP';
+    }
+    if (card.mp) {
+      player.mp = Math.min(99, player.mp + card.mp);
+      detail = '+' + card.mp + ' MP';
+    }
+    if (card.gold) {
+      player.gold += card.gold;
+      detail = '+' + card.gold + ' Gold';
+    }
+    if (card.exchange) {
+      // exchange 10 HP → MP
+      if (player.hp > 10) { player.hp -= 10; player.mp = Math.min(99, player.mp + 10); detail = '-10 HP, +10 MP'; }
+    }
+    addLog({ type:'item', actor: player.name, card: card.name, detail });
+    broadcastAll({ type:'gs_update', gs: sanitizeGS() });
+  }
+}
+
+// ---- DEFENSE TIMER (HOST) ----
+function startDefenseTimer() {
+  clearDefenseTimerHost();
+  defenseTimeout = setTimeout(() => {
+    resolveAttack(null); // no defense
+  }, DEFENSE_WINDOW_MS);
+}
+
+function clearDefenseTimerHost() {
+  if (defenseTimeout) { clearTimeout(defenseTimeout); defenseTimeout = null; }
+}
+
+function resolveAttack(defCard) {
+  clearDefenseTimerHost();
+  if (!pendingAttack) return;
+
+  const attacker = GS.players.find(p => p.peerId === pendingAttack.attackerId);
+  const target = GS.players.find(p => p.peerId === pendingAttack.targetId);
+  if (!attacker || !target) { pendingAttack = null; return; }
+
+  let dmg = pendingAttack.damage;
+  let blocked = 0;
+  let reflected = 0;
+
+  if (defCard) {
+    if (defCard.def === 999) {
+      // dodge
+      blocked = dmg; dmg = 0;
+    } else if (defCard.reflect) {
+      reflected = Math.floor(defCard.def / 2);
+      blocked = defCard.def;
+      dmg = Math.max(0, dmg - defCard.def);
+      attacker.hp = Math.max(0, attacker.hp - reflected);
+    } else {
+      blocked = Math.min(defCard.def, dmg);
+      dmg = Math.max(0, dmg - defCard.def);
+    }
+  }
+
+  target.hp = Math.max(0, target.hp - dmg);
+
+  addLog({ type:'attack', actor: attacker.name, target: target.name, card: pendingAttack.cardName, dmg, blocked: blocked||0, reflected: reflected||0 });
+
+  broadcastAll({ type:'attack_resolved', dmg, blocked, reflected, targetName: target.name });
+
+  pendingAttack = null;
+
+  checkDeath(target);
+  if (reflected) checkDeath(attacker);
+
+  broadcastAll({ type:'gs_update', gs: sanitizeGS() });
+  checkVictory();
+}
+
+function checkDeath(player) {
+  if (player.alive && player.hp <= 0) {
+    player.alive = false;
+    player.hp = 0;
+    addLog({ type:'dead', name: player.name });
+  }
+}
+
+function nextAliveName() {
+  let next = (GS.turnIndex + 1) % GS.players.length;
+  let tries = 0;
+  while (!GS.players[next].alive && tries < GS.players.length) {
+    next = (next + 1) % GS.players.length;
+    tries++;
+  }
+  return GS.players[next]?.name || '—';
+}
+
+function advanceTurn() {
+  let next = (GS.turnIndex + 1) % GS.players.length;
+  let tries = 0;
+  while (!GS.players[next].alive && tries < GS.players.length) {
+    next = (next + 1) % GS.players.length;
+    tries++;
+  }
+  GS.turnIndex = next;
+}
+
+function checkVictory() {
+  const alive = GS.players.filter(p => p.alive);
+  if (alive.length <= 1) {
+    GS.phase = 'over';
+    GS.winner = alive[0]?.name || null;
+    addLog({ type:'system', text: alive[0] ? alive[0].name + ' wins the prophecy!' : 'All prophets have fallen.' });
+    broadcastAll({ type:'gs_update', gs: sanitizeGS() });
+    showGameOver();
+  }
+}
+
+// ---- DEFENSE WINDOW (CLIENT) ----
+let defClientTimer = null;
+
+function showDefenseWindow(d) {
+  pendingAttack = d;
+  const win = document.getElementById('defense-window');
+  document.getElementById('def-attacker').textContent = d.attackerName;
+  document.getElementById('def-target-name').textContent = d.targetName;
+  document.getElementById('def-card-name').textContent = d.cardEmoji + ' ' + d.cardName;
+  document.getElementById('def-dmg').textContent = d.damage;
+
+  const amTarget = GS.players[myPlayerId]?.peerId === d.targetId;
+  win.classList.toggle('active', true);
+
+  let secs = Math.ceil(DEFENSE_WINDOW_MS / 1000);
+  document.getElementById('def-timer').textContent = secs;
+  if (defClientTimer) clearInterval(defClientTimer);
+  defClientTimer = setInterval(() => {
+    secs--;
+    const el = document.getElementById('def-timer');
+    if (el) el.textContent = Math.max(0, secs);
+    if (secs <= 0) clearInterval(defClientTimer);
+  }, 1000);
+
+  // Re-render hand to highlight defense cards if I'm the target
+  if (amTarget) {
+    const me = GS.players[myPlayerId];
+    renderHandForDefense(me);
+  }
+}
+
+function renderHandForDefense(me) {
+  const area = document.getElementById('hand-area');
+  if (!area || !me) return;
+  area.innerHTML = '';
+  (me.hand || []).filter(Boolean).forEach(card => {
+    const div = document.createElement('div');
+    div.className = 'card' + (card.uid === selectedCardUid ? ' selected' : '');
+    if (card.type === 'defense') {
+      div.classList.add('defense-card');
+    } else {
+      div.classList.add('disabled');
+    }
+    div.dataset.type = card.type;
+    div.innerHTML = `
+      <div class="card-top">${card.type.toUpperCase()}</div>
+      <div class="card-center">${card.emoji}</div>
+      <div class="card-bottom">
+        <div class="card-val">${cardStatLabel(card)}</div>
+        <div style="font-size:0.55rem;margin-top:0.1rem">${escHtml(card.name)}</div>
+      </div>
+    `;
+    div.onclick = () => {
+      if (card.type === 'defense') submitDefense(card.uid);
+    };
+    area.appendChild(div);
+  });
+}
+
+function submitDefense(cardUid) {
+  sendAction({ type: 'defend', cardUid });
+  clearDefenseWindow();
+}
+
+function clearDefenseWindow() {
+  document.getElementById('defense-window').classList.remove('active');
+  if (defClientTimer) clearInterval(defClientTimer);
+  pendingAttack = null;
+  // Re-render hand normally
+  const me = GS?.players?.[myPlayerId];
+  if (me) {
+    const isMyTurn = GS.players[GS.turnIndex]?.peerId === myId;
+    renderHand(me, isMyTurn);
+  }
+}
+
+function applyAttackResult(d) {
+  // Visual feedback
+  if (d.dmg > 0) floatDamage('-' + d.dmg + ' HP', 'var(--red2)');
+  else if (d.blocked) floatDamage('BLOCKED!', 'var(--blue2)');
+}
+
+function floatDamage(text, color) {
+  const el = document.createElement('div');
+  el.className = 'float-dmg';
+  el.textContent = text;
+  el.style.color = color;
+  el.style.left = (window.innerWidth/2 - 40 + Math.random()*80) + 'px';
+  el.style.top = (window.innerHeight/2 + Math.random()*40) + 'px';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1300);
+}
+
+// ---- GAME OVER ----
+function showGameOver() {
+  const ov = document.getElementById('overlay');
+  const title = document.getElementById('overlay-title');
+  const sub = document.getElementById('overlay-sub');
+  const winner = GS?.winner;
+  const iWon = winner && GS.players[myPlayerId]?.name === winner;
+  title.textContent = iWon ? '⚜ VICTORY' : (winner ? '☠ DEFEATED' : '— DRAW —');
+  title.style.color = iWon ? 'var(--gold2)' : 'var(--red2)';
+  sub.textContent = winner ? winner + ' has become the next God.' : 'The prophecy ends with no victor.';
+  ov.classList.add('active');
+}
+
+// ---- ITEM CARD CLICK (action bar) ----
+// We handle item cards via the attack button repurposed, OR we detect type on doAttack
+// Override doAttack to check card type:
+const _origDoAttack = doAttack;
+window.doAttack = function() {
+  if (!selectedCardUid) { toast('Select a card first'); return; }
+  const me = GS?.players?.[myPlayerId];
+  if (!me) return;
+  const card = me.hand.find(c => c && c.uid === selectedCardUid);
+  if (!card) return;
+
+  if (card.type === 'item') {
+    sendAction({ type: 'use_item', cardUid: selectedCardUid });
+    selectedCardUid = null;
+    return;
+  }
+  if (card.type === 'miracle' && card.heal) {
+    // healing miracle targets self
+    sendAction({ type: 'use_item', cardUid: selectedCardUid });
+    selectedCardUid = null;
+    return;
+  }
+  // attack or miracle-attack
+  const targetId = document.getElementById('target-select').value;
+  if (!targetId && !card.aoe) { toast('Select a target'); return; }
+  sendAction({ type: 'attack', cardUid: selectedCardUid, targetId });
+  selectedCardUid = null;
+};
+
+// ---- LEAVE / CLEANUP ----
+function leaveRoom() {
+  clearDefenseTimerHost();
+  if (peer) { peer.destroy(); peer = null; }
+  hostConn = null; guestConns = {};
+  GS = null; logEntries = [];
+  selectedCardUid = null; pendingAttack = null;
+  myPlayerId = null; myId = null; isHost = false;
+  document.getElementById('overlay').classList.remove('active');
+  showScreen('screen-lobby');
+  setStatus('Awaiting the call of fate...');
+}
+
+// ---- UTILS ----
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
