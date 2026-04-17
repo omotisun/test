@@ -20,7 +20,7 @@
   --text:     #1a4a40;
   --text2:    #2d7060;
   --muted:    #5a8880;
-  --gold:     #d4a017;
+  --gold:     #c8a000;
   --gold2:    #f0c030;
   --red:      #c0392b;
   --red2:     #e74c3c;
@@ -28,741 +28,506 @@
   --blue2:    #5dade2;
   --green:    #1e8449;
   --green2:   #27ae60;
-  --hp-bar:   #27ae60;
-  --mp-bar:   #5dade2;
-  --atk-bg:   #e8f8e8;
-  --atk-border:#3a9e50;
-  --def-bg:   #e8eef8;
-  --def-border:#3a50ae;
-  --itm-bg:   #f8f4e0;
-  --itm-border:#ae9030;
-  --mir-bg:   #f4e8f8;
-  --mir-border:#8030ae;
   --white:    #ffffff;
   --shadow:   rgba(0,0,0,0.15);
+  --atk-bg:   #e8f8e8; --atk-bd: #3a9e50;
+  --def-bg:   #e8eef8; --def-bd: #3a50ae;
+  --itm-bg:   #f8f4e0; --itm-bd: #ae9030;
+  --mir-bg:   #f4e8f8; --mir-bd: #8030ae;
 }
-
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
+* { box-sizing:border-box; margin:0; padding:0; }
 body {
-  font-family: 'M PLUS Rounded 1c', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  height: 100vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
+  font-family:'M PLUS Rounded 1c',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  height:100vh;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
 }
 
-/* ===================== SCREENS ===================== */
-.screen { display: none; }
-.screen.active { display: flex; flex-direction: column; height: 100vh; }
+/* ===== SCREENS ===== */
+.screen { display:none; }
+.screen.active { display:flex; flex-direction:column; height:100vh; }
 
-/* ===================== LOBBY ===================== */
+/* ===== LOBBY ===== */
 #screen-lobby {
-  background: linear-gradient(160deg, #5ecec0 0%, #3aa898 100%);
-  align-items: center;
-  justify-content: center;
-  gap: 1.5rem;
-  padding: 2rem;
+  background:linear-gradient(160deg,#5ecec0,#3aa898);
+  align-items:center; justify-content:center; gap:1.5rem; padding:2rem;
 }
-
-.logo-wrap { text-align: center; }
-.logo-main {
-  font-size: clamp(2rem, 7vw, 4rem);
-  font-weight: 800;
-  color: var(--white);
-  text-shadow: 0 3px 0 var(--border2), 0 5px 12px rgba(0,0,0,0.2);
-  letter-spacing: 0.05em;
-  line-height: 1;
-}
-.logo-sub {
-  font-size: 0.8rem;
-  color: rgba(255,255,255,0.7);
-  letter-spacing: 0.15em;
-  margin-top: 0.3rem;
-}
-
-.lobby-row {
-  display: flex;
-  gap: 1.2rem;
-  flex-wrap: wrap;
-  justify-content: center;
-  width: 100%;
-  max-width: 780px;
-}
-
+.logo-main { font-size:clamp(2rem,7vw,4rem); font-weight:800; color:#fff;
+  text-shadow:0 3px 0 var(--border2),0 5px 12px rgba(0,0,0,.2); letter-spacing:.05em; text-align:center; }
+.logo-sub  { font-size:.8rem; color:rgba(255,255,255,.7); letter-spacing:.15em; text-align:center; margin-top:.3rem; }
+.lobby-row { display:flex; gap:1.2rem; flex-wrap:wrap; justify-content:center; width:100%; max-width:780px; }
 .lobby-panel {
-  background: var(--panel);
-  border: 2px solid var(--border);
-  border-radius: 12px;
-  padding: 1.4rem;
-  flex: 1;
-  min-width: 260px;
-  max-width: 360px;
-  box-shadow: 0 4px 0 var(--border2), 0 6px 16px var(--shadow);
+  background:var(--panel); border:2px solid var(--border); border-radius:12px;
+  padding:1.4rem; flex:1; min-width:260px; max-width:360px;
+  box-shadow:0 4px 0 var(--border2),0 6px 16px var(--shadow);
 }
-
-.lobby-panel-title {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--header);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  margin-bottom: 1rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid var(--surface2);
+.lp-title { font-size:.72rem; font-weight:800; color:var(--header); letter-spacing:.1em;
+  text-transform:uppercase; margin-bottom:.9rem; padding-bottom:.4rem; border-bottom:2px solid var(--surface2); }
+.field { display:flex; flex-direction:column; gap:.3rem; margin-bottom:.8rem; }
+.field label { font-size:.7rem; font-weight:700; color:var(--text2); }
+input[type=text] {
+  background:#fff; border:2px solid var(--border); border-radius:8px;
+  color:var(--text); font-family:inherit; font-size:1rem;
+  padding:.5rem .8rem; outline:none; width:100%; transition:border-color .15s;
 }
-
-.field { display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 0.9rem; }
-.field label { font-size: 0.7rem; font-weight: 700; color: var(--text2); }
-input[type="text"] {
-  background: var(--white);
-  border: 2px solid var(--border);
-  border-radius: 8px;
-  color: var(--text);
-  font-family: inherit;
-  font-size: 1rem;
-  padding: 0.55rem 0.8rem;
-  outline: none;
-  width: 100%;
-  transition: border-color 0.15s;
-}
-input[type="text"]:focus { border-color: var(--header); }
-input[type="text"]::placeholder { color: #aaa; }
-
+input[type=text]:focus { border-color:var(--header); }
+input[type=text]::placeholder { color:#aaa; }
 .btn {
-  font-family: inherit;
-  font-weight: 800;
-  font-size: 0.85rem;
-  padding: 0.7rem 1.2rem;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  width: 100%;
-  transition: all 0.1s;
-  letter-spacing: 0.05em;
+  font-family:inherit; font-weight:800; font-size:.85rem; padding:.7rem 1.2rem;
+  border-radius:8px; border:none; cursor:pointer; width:100%;
+  transition:all .1s; letter-spacing:.05em;
 }
-.btn:active { transform: translateY(2px); }
-.btn-green {
-  background: var(--header);
-  color: var(--white);
-  box-shadow: 0 3px 0 var(--border2);
-}
-.btn-green:hover { background: var(--header2); }
-.btn-green:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-.btn-outline {
-  background: var(--white);
-  color: var(--header);
-  border: 2px solid var(--header);
-  box-shadow: 0 3px 0 var(--border2);
-}
-.btn-outline:hover { background: var(--surface); }
-.btn-red {
-  background: var(--red);
-  color: var(--white);
-  box-shadow: 0 2px 0 #922b21;
-  font-size: 0.75rem;
-  padding: 0.5rem 1rem;
-}
-.btn-red:hover { background: var(--red2); }
+.btn:active { transform:translateY(2px); }
+.btn-green { background:var(--header); color:#fff; box-shadow:0 3px 0 var(--border2); }
+.btn-green:hover { background:var(--header2); }
+.btn-green:disabled { opacity:.4; cursor:not-allowed; transform:none; }
+.btn-outline { background:#fff; color:var(--header); border:2px solid var(--header); box-shadow:0 3px 0 var(--border2); }
+.btn-outline:hover { background:var(--surface); }
+.btn-red { background:var(--red); color:#fff; box-shadow:0 2px 0 #922b21; font-size:.75rem; padding:.5rem 1rem; }
+#status-msg { font-size:.8rem; color:rgba(255,255,255,.8); text-align:center; min-height:1.4em; }
+#status-msg.err { color:#ffaaaa; } #status-msg.ok { color:#aaffdd; }
 
-#status-msg {
-  font-size: 0.8rem;
-  color: rgba(255,255,255,0.8);
-  text-align: center;
-  min-height: 1.4em;
-}
-#status-msg.err { color: #ffaaaa; }
-#status-msg.ok { color: #aaffdd; }
-
-/* ===================== WAITING ===================== */
+/* ===== WAITING ===== */
 #screen-waiting {
-  background: linear-gradient(160deg, #5ecec0 0%, #3aa898 100%);
-  align-items: center;
-  justify-content: center;
-  gap: 1.2rem;
-  padding: 2rem;
+  background:linear-gradient(160deg,#5ecec0,#3aa898);
+  align-items:center; justify-content:center; gap:1.2rem; padding:2rem;
 }
+.wait-panel { background:var(--panel); border:2px solid var(--border); border-radius:12px;
+  padding:1.4rem; width:100%; max-width:480px; box-shadow:0 4px 0 var(--border2),0 6px 16px var(--shadow); }
+.room-code-box { background:#fff; border:2px dashed var(--header); border-radius:10px;
+  padding:.8rem 1.2rem; text-align:center; cursor:pointer; margin-bottom:1rem; transition:background .15s; }
+.room-code-box:hover { background:var(--surface); }
+.room-code-label { font-size:.62rem; font-weight:700; color:var(--muted); letter-spacing:.15em; text-transform:uppercase; }
+.room-code-val { font-size:1.5rem; font-weight:800; color:var(--header); letter-spacing:.1em; }
+.player-list { display:flex; flex-direction:column; gap:.4rem; margin-bottom:1rem; }
+.player-item { display:flex; align-items:center; gap:.6rem; background:var(--surface2);
+  border-radius:8px; padding:.4rem .8rem; font-size:.9rem; font-weight:700; }
+.badge { font-size:.55rem; font-weight:800; letter-spacing:.08em; padding:.15rem .4rem;
+  border-radius:4px; text-transform:uppercase; }
+.badge-host { background:var(--gold2); color:#5a3a00; }
+.badge-you  { background:var(--blue2); color:#fff; }
+.wait-actions { display:flex; gap:.6rem; }
+#status-wait { font-size:.8rem; color:rgba(255,255,255,.75); text-align:center; }
+.pulse { animation:pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:.5} }
 
-.wait-panel {
-  background: var(--panel);
-  border: 2px solid var(--border);
-  border-radius: 12px;
-  padding: 1.4rem;
-  width: 100%;
-  max-width: 480px;
-  box-shadow: 0 4px 0 var(--border2), 0 6px 16px var(--shadow);
-}
+/* ===== GAME ===== */
+#screen-game { display:none; flex-direction:column; height:100vh; overflow:hidden; }
+#screen-game.active { display:flex; }
 
-.room-code-box {
-  background: var(--white);
-  border: 2px dashed var(--header);
-  border-radius: 10px;
-  padding: 0.8rem 1.2rem;
-  text-align: center;
-  cursor: pointer;
-  margin-bottom: 1rem;
-  transition: background 0.15s;
-}
-.room-code-box:hover { background: var(--surface); }
-.room-code-label { font-size: 0.65rem; font-weight: 700; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; }
-.room-code-val { font-size: 1.5rem; font-weight: 800; color: var(--header); letter-spacing: 0.1em; }
-
-.player-list { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem; }
-.player-item {
-  display: flex; align-items: center; gap: 0.6rem;
-  background: var(--surface2);
-  border-radius: 8px;
-  padding: 0.45rem 0.8rem;
-  font-size: 0.9rem; font-weight: 700;
-}
-.badge {
-  font-size: 0.55rem; font-weight: 800; letter-spacing: 0.08em;
-  padding: 0.15rem 0.4rem; border-radius: 4px;
-  text-transform: uppercase;
-}
-.badge-host { background: var(--gold2); color: #5a3a00; }
-.badge-you  { background: var(--blue2); color: var(--white); }
-
-.wait-actions { display: flex; gap: 0.6rem; }
-#status-wait { font-size: 0.8rem; color: rgba(255,255,255,0.75); text-align: center; }
-.pulse { animation: pulse 2s ease-in-out infinite; }
-@keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.5} }
-
-/* ===================== GAME LAYOUT ===================== */
-#screen-game {
-  display: none;
-  flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
-}
-#screen-game.active { display: flex; }
-
-/* --- Header bar --- */
+/* Header */
 .g-header {
-  background: var(--header);
-  color: var(--white);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 0.8rem;
-  height: 38px;
-  flex-shrink: 0;
-  box-shadow: 0 2px 0 var(--border2);
-  gap: 0.5rem;
+  background:var(--header); color:#fff; height:36px;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 .8rem; flex-shrink:0; box-shadow:0 2px 0 var(--border2); gap:.5rem;
 }
-.g-header-left { display: flex; align-items: center; gap: 0.5rem; font-weight: 800; font-size: 0.9rem; }
-.g-title { font-size: 0.85rem; font-weight: 800; }
-.gf-badge {
-  background: var(--gold2);
-  color: #4a3000;
-  font-size: 0.7rem; font-weight: 800;
-  padding: 0.15rem 0.6rem;
-  border-radius: 20px;
-}
-.g-header-right { display: flex; align-items: center; gap: 0.5rem; }
-.header-btn {
-  background: rgba(255,255,255,0.18);
-  border: none;
-  color: var(--white);
-  font-family: inherit;
-  font-size: 0.7rem; font-weight: 700;
-  padding: 0.25rem 0.7rem;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.15s;
-}
-.header-btn:hover { background: rgba(255,255,255,0.3); }
+.g-title { font-size:.85rem; font-weight:800; }
+.gf-badge { background:var(--gold2); color:#4a3000; font-size:.7rem; font-weight:800;
+  padding:.15rem .6rem; border-radius:20px; }
+.header-btn { background:rgba(255,255,255,.18); border:none; color:#fff;
+  font-family:inherit; font-size:.7rem; font-weight:700; padding:.25rem .7rem;
+  border-radius:6px; cursor:pointer; transition:background .15s; }
+.header-btn:hover { background:rgba(255,255,255,.3); }
 
-/* --- Main body --- */
+/* ---- GAME BODY: 3 columns ---- */
+/*
+  Left  : card-play zone (active card + atk value)
+  Center: target select + hand
+  Right : player list
+*/
 .g-body {
-  flex: 1;
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  overflow: hidden;
-  min-height: 0;
+  flex:1; display:grid;
+  grid-template-columns: 200px 1fr 240px;
+  grid-template-rows: 1fr;
+  overflow:hidden; min-height:0;
 }
 
-/* --- Left panel: active card + player list --- */
+/* ===== LEFT ZONE ===== */
 .g-left {
-  background: var(--bg);
-  border-right: 2px solid var(--border2);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+  background:var(--bg2);
+  border-right:2px solid var(--border2);
+  display:flex; flex-direction:column;
+  overflow:hidden;
 }
 
-/* Active card display (top-left, like "硬いつち" in screenshot) */
-.active-card-display {
-  background: var(--surface);
-  border-bottom: 2px solid var(--border);
-  padding: 0.6rem;
-  min-height: 90px;
-  display: flex;
-  gap: 0.6rem;
-  align-items: stretch;
+/* Used-card display (only visible to self) */
+.used-card-zone {
+  flex:1;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  padding:.6rem;
+  gap:.5rem;
 }
-.active-card-display.empty { opacity: 0; pointer-events: none; }
-
-.acd-icon {
-  width: 70px; min-width: 70px; height: 70px;
-  border: 2px solid var(--border);
-  border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 2.2rem;
-  background: var(--white);
-  flex-shrink: 0;
+.used-card-label { font-size:.6rem; font-weight:700; color:rgba(255,255,255,.6);
+  letter-spacing:.15em; text-transform:uppercase; }
+.used-card-slot {
+  width:90px; height:126px;
+  border:2px dashed rgba(255,255,255,.3);
+  border-radius:10px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  background:rgba(255,255,255,.08);
+  transition:all .2s;
 }
-.acd-info { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
-.acd-name { font-size: 0.95rem; font-weight: 800; color: var(--text); }
-.acd-stat { font-size: 0.85rem; font-weight: 700; color: var(--text2); }
-.acd-cost {
-  align-self: flex-end;
-  background: var(--gold2);
-  color: #4a3000;
-  font-size: 0.75rem; font-weight: 800;
-  padding: 0.15rem 0.5rem;
-  border-radius: 20px;
+.used-card-slot.filled {
+  border-style:solid; border-color:rgba(255,255,255,.5);
+  background:rgba(255,255,255,.15);
 }
+.used-card-emoji { font-size:2.8rem; line-height:1; }
+.used-card-name  { font-size:.65rem; font-weight:700; color:#fff; text-align:center; margin-top:.3rem; }
 
-/* Attack value big display */
-.atk-big-display {
-  background: var(--atk-bg);
-  border: 2px solid var(--atk-border);
-  border-radius: 10px;
-  padding: 0.4rem 1rem;
-  margin: 0.5rem 0.6rem 0;
-  font-size: 1.1rem; font-weight: 800;
-  color: var(--text);
-  text-align: center;
-  display: none;
+/* ATK value bottom-left */
+.atk-display {
+  background:rgba(0,0,0,.25);
+  border-top:2px solid rgba(255,255,255,.2);
+  padding:.5rem .8rem;
+  font-size:1.1rem; font-weight:800; color:#fff;
+  text-align:center; flex-shrink:0;
+  min-height:42px;
 }
-.atk-big-display.active { display: block; }
+.atk-display span { color:var(--gold2); }
 
-/* Player list in left panel */
-.player-scroll {
-  flex: 1;
-  overflow-y: auto;
-  padding: 0.5rem 0.6rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-/* Player bar (horizontal, like in screenshot) */
-.pbar {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: var(--panel);
-  border: 2px solid var(--border);
-  border-radius: 20px;
-  padding: 0.3rem 0.8rem 0.3rem 0.4rem;
-  cursor: pointer;
-  transition: all 0.15s;
-  position: relative;
-}
-.pbar.active-turn { border-color: var(--gold); box-shadow: 0 0 0 2px var(--gold2); }
-.pbar.dead { opacity: 0.35; pointer-events: none; }
-.pbar.me { border-color: var(--blue2); }
-.pbar:hover:not(.dead) { background: var(--surface2); }
-
-.pbar-dot {
-  width: 14px; height: 14px;
-  border-radius: 50%;
-  background: #aaa;
-  flex-shrink: 0;
-  border: 2px solid #888;
-}
-.pbar.active-turn .pbar-dot { background: var(--gold2); border-color: var(--gold); }
-.pbar.me .pbar-dot { background: var(--blue2); border-color: var(--blue); }
-
-.pbar-name { flex: 1; font-size: 0.85rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.pbar-stats { font-size: 0.65rem; font-weight: 700; color: var(--text2); white-space: nowrap; }
-.pbar-stats span { margin-left: 0.3rem; }
-.pbar-hp { color: var(--green); }
-.pbar-mp { color: var(--blue); }
-.pbar-gd { color: var(--gold); }
-
-/* Turn arrow */
-.turn-arrow {
-  font-size: 1.2rem;
-  color: #e91e8c;
-  flex-shrink: 0;
-  display: none;
-}
-.pbar.active-turn .turn-arrow { display: block; }
-
-/* --- Center panel --- */
+/* ===== CENTER ZONE ===== */
 .g-center {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  background: var(--bg);
+  display:flex; flex-direction:column; overflow:hidden;
+  background:var(--bg);
 }
 
-/* Top area: opponent's last action (right side of screenshot) */
-.opp-action-area {
-  padding: 0.6rem 0.8rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  border-bottom: 2px solid var(--border);
-  background: var(--surface);
-  flex-shrink: 0;
+/* Target area (top of center) */
+.target-zone {
+  background:var(--surface);
+  border-bottom:2px solid var(--border);
+  padding:.5rem .8rem;
+  display:flex; align-items:center; gap:.6rem;
+  flex-shrink:0; flex-wrap:wrap;
 }
-.opp-action-title {
-  font-size: 0.65rem; font-weight: 800;
-  color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase;
+.target-zone-label { font-size:.65rem; font-weight:800; color:var(--muted);
+  letter-spacing:.1em; text-transform:uppercase; white-space:nowrap; }
+.target-btns { display:flex; gap:.4rem; flex-wrap:wrap; flex:1; }
+.target-btn {
+  font-family:inherit; font-size:.72rem; font-weight:800;
+  padding:.3rem .75rem; border-radius:20px;
+  border:2px solid var(--border); background:var(--panel);
+  color:var(--text); cursor:pointer; transition:all .15s; white-space:nowrap;
 }
-.opp-action-card {
-  display: flex; gap: 0.5rem; align-items: center;
-  background: var(--panel);
-  border: 2px solid var(--border);
-  border-radius: 8px;
-  padding: 0.4rem 0.8rem;
-}
-.opp-action-card .acd-icon { width: 44px; min-width: 44px; height: 44px; font-size: 1.5rem; border-radius: 6px; }
-.opp-action-info .acd-name { font-size: 0.85rem; }
-.opp-action-info .acd-stat { font-size: 0.75rem; }
+.target-btn:hover { background:var(--surface2); }
+.target-btn.selected { background:var(--header); color:#fff; border-color:var(--header2); }
+.target-btn.dead { opacity:.35; pointer-events:none; }
 
 /* Defense window */
 .defense-window {
-  background: rgba(52,152,219,0.12);
-  border: 2px solid var(--blue2);
-  border-radius: 10px;
-  margin: 0.4rem 0.8rem;
-  padding: 0.6rem 0.8rem;
-  display: none;
-  gap: 0.8rem;
-  align-items: center;
-  flex-shrink: 0;
+  background:rgba(52,152,219,.12); border:2px solid var(--blue2);
+  border-radius:10px; margin:.4rem .8rem;
+  padding:.55rem .8rem; display:none;
+  gap:.8rem; align-items:center; flex-shrink:0;
 }
-.defense-window.active { display: flex; }
-.def-text { flex: 1; font-size: 0.82rem; font-weight: 700; line-height: 1.5; }
-.def-text .attacker { color: var(--red2); }
-.def-text .def-card-name { color: #8030ae; font-style: italic; }
+.defense-window.active { display:flex; }
+.def-text { flex:1; font-size:.8rem; font-weight:700; line-height:1.5; }
+.def-text .attacker { color:var(--red2); font-weight:800; }
 .def-timer-circle {
-  width: 42px; height: 42px; border-radius: 50%;
-  background: var(--blue2); color: var(--white);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.3rem; font-weight: 800;
-  flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(52,152,219,0.4);
+  width:40px; height:40px; border-radius:50%;
+  background:var(--blue2); color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.2rem; font-weight:800; flex-shrink:0;
+  box-shadow:0 2px 8px rgba(52,152,219,.4);
 }
 
-/* Broadcast log (お告げ) */
-.broadcast-log {
-  flex: 1;
-  overflow-y: auto;
-  padding: 0.5rem 0.8rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
+/* DEF stacked display (bottom-left of center when defending) */
+.def-stack-display {
+  background:rgba(52,152,219,.1);
+  border-top:2px solid var(--def-bd);
+  padding:.4rem .8rem;
+  font-size:.85rem; font-weight:800;
+  color:var(--blue);
+  text-align:center; flex-shrink:0;
+  display:none;
 }
-.log-line {
-  font-size: 0.82rem;
-  font-weight: 700;
-  padding: 0.2rem 0.5rem;
-  border-radius: 6px;
-  line-height: 1.4;
-  animation: fadeIn 0.25s ease;
+.def-stack-display.active { display:block; }
+
+/* Chat/log area */
+.chat-area {
+  flex:1; display:flex; flex-direction:column; overflow:hidden; min-height:0;
+}
+.chat-log {
+  flex:1; overflow-y:auto; padding:.5rem .8rem;
+  display:flex; flex-direction:column; gap:.15rem;
+}
+.chat-line {
+  font-size:.8rem; font-weight:700; padding:.2rem .5rem;
+  border-radius:6px; line-height:1.45;
+  animation:fadeIn .25s ease;
 }
 @keyframes fadeIn { from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none} }
-.log-line.system { color: var(--muted); font-weight: 400; font-style: italic; }
-.log-line.attack { background: rgba(231,76,60,0.08); color: var(--text); }
-.log-line.heal   { background: rgba(39,174,96,0.08); color: var(--text); }
-.log-line.item   { background: rgba(212,160,23,0.08); color: var(--text); }
-.log-line.dead   { background: rgba(231,76,60,0.15); color: var(--red); font-weight: 800; }
-.log-actor  { color: var(--header2); font-weight: 800; }
-.log-target { color: var(--red); font-weight: 800; }
-.log-card   { color: #8030ae; font-style: italic; }
-.log-val    { font-weight: 800; }
+.chat-line.system { color:var(--muted); font-weight:400; font-style:italic; }
+.chat-line.attack { background:rgba(231,76,60,.08); }
+.chat-line.heal   { background:rgba(39,174,96,.08); }
+.chat-line.item   { background:rgba(212,160,23,.08); }
+.chat-line.dead   { background:rgba(231,76,60,.15); color:var(--red); font-weight:800; }
+.chat-line.chat   { background:rgba(255,255,255,.5); color:var(--text); }
+.log-actor  { color:var(--header2); font-weight:800; }
+.log-target { color:var(--red); font-weight:800; }
+.log-card   { color:#8030ae; font-style:italic; }
+.log-val    { font-weight:800; }
+.chat-author { color:var(--blue); font-weight:800; }
 
-/* My area (bottom) */
+/* Chat input */
+.chat-input-row {
+  display:flex; gap:.4rem; padding:.5rem .6rem;
+  background:var(--surface2); border-top:2px solid var(--border);
+  flex-shrink:0;
+}
+.chat-input {
+  flex:1; font-family:inherit; font-size:.8rem; font-weight:700;
+  background:#fff; border:2px solid var(--border); border-radius:20px;
+  padding:.3rem .8rem; outline:none; color:var(--text); transition:border-color .15s;
+}
+.chat-input:focus { border-color:var(--header); }
+.chat-send {
+  font-family:inherit; font-size:.72rem; font-weight:800;
+  background:var(--header); color:#fff; border:none;
+  border-radius:20px; padding:.3rem .9rem; cursor:pointer; transition:background .15s;
+}
+.chat-send:hover { background:var(--header2); }
+
+/* My hand area */
 .my-area {
-  background: var(--surface2);
-  border-top: 2px solid var(--border2);
-  flex-shrink: 0;
-  padding: 0.5rem 0.8rem;
+  background:var(--surface2); border-top:2px solid var(--border2);
+  flex-shrink:0; padding:.45rem .7rem;
 }
-
-/* My stat bar */
 .my-stat-bar {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  margin-bottom: 0.5rem;
-  flex-wrap: wrap;
+  display:flex; align-items:center; gap:.5rem; margin-bottom:.4rem; flex-wrap:wrap;
 }
-.my-name { font-size: 0.9rem; font-weight: 800; color: var(--text); margin-right: auto; }
+.my-name  { font-size:.85rem; font-weight:800; color:var(--text); margin-right:auto; }
 .stat-chip {
-  display: flex; align-items: center; gap: 0.3rem;
-  background: var(--panel);
-  border: 1.5px solid var(--border);
-  border-radius: 20px;
-  padding: 0.2rem 0.6rem;
-  font-size: 0.8rem; font-weight: 800;
+  display:flex; align-items:center; gap:.25rem;
+  background:var(--panel); border:1.5px solid var(--border);
+  border-radius:20px; padding:.18rem .55rem;
+  font-size:.78rem; font-weight:800;
 }
-.stat-chip .icon { font-size: 0.85rem; }
-.stat-chip.hp { border-color: var(--green); color: var(--green); }
-.stat-chip.mp { border-color: var(--blue); color: var(--blue); }
-.stat-chip.gd { border-color: var(--gold); color: var(--gold); }
+.stat-chip.hp { border-color:var(--green); color:var(--green); }
+.stat-chip.mp { border-color:var(--blue);  color:var(--blue); }
+.stat-chip.gd { border-color:var(--gold);  color:var(--gold); }
 
-/* Hand */
-.hand-area {
-  display: flex;
-  gap: 0.35rem;
-  overflow-x: auto;
-  padding-bottom: 0.3rem;
-  align-items: flex-end;
-  min-height: 100px;
+/* Hand: 2 rows × 9 cols */
+.hand-wrap {
+  display:flex; flex-direction:column; gap:.25rem; overflow:hidden;
 }
-.hand-area::-webkit-scrollbar { height: 4px; }
-.hand-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.hand-row {
+  display:flex; gap:.28rem; overflow-x:auto; align-items:flex-end;
+}
+.hand-row::-webkit-scrollbar { height:3px; }
+.hand-row::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
 
-/* Card in hand */
+/* Card */
 .card {
-  width: 76px; min-width: 76px;
-  border-radius: 10px;
-  border: 2.5px solid var(--border);
-  background: var(--white);
-  display: flex; flex-direction: column;
-  cursor: pointer;
-  transition: transform 0.12s, box-shadow 0.12s, border-color 0.12s;
-  overflow: hidden;
-  flex-shrink: 0;
-  user-select: none;
-  position: relative;
+  width:66px; min-width:66px; height:88px;
+  border-radius:8px; border:2.5px solid var(--border);
+  background:#fff; display:flex; flex-direction:column;
+  cursor:pointer; transition:transform .12s,box-shadow .12s,border-color .12s;
+  overflow:hidden; flex-shrink:0; user-select:none; position:relative;
 }
-.card:hover { transform: translateY(-10px); box-shadow: 0 8px 20px var(--shadow); z-index: 5; }
-.card.selected { transform: translateY(-14px); box-shadow: 0 10px 24px rgba(0,0,0,0.25); z-index: 6; border-width: 3px; }
-.card.disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
-.card.defense-highlight { border-color: var(--blue2) !important; }
-.card.defense-highlight:hover { box-shadow: 0 8px 20px rgba(52,152,219,0.4); }
-
-.card[data-type="attack"]  { border-color: var(--atk-border); background: var(--atk-bg); }
-.card[data-type="attack"].selected { border-color: var(--red2); }
-.card[data-type="defense"] { border-color: var(--def-border); background: var(--def-bg); }
-.card[data-type="defense"].selected { border-color: var(--blue2); }
-.card[data-type="item"]    { border-color: var(--itm-border); background: var(--itm-bg); }
-.card[data-type="item"].selected { border-color: var(--gold); }
-.card[data-type="miracle"] { border-color: var(--mir-border); background: var(--mir-bg); }
-.card[data-type="miracle"].selected { border-color: var(--mir-border); }
-
+.card:hover { transform:translateY(-8px); box-shadow:0 8px 18px var(--shadow); z-index:5; }
+.card.selected { transform:translateY(-12px); box-shadow:0 10px 22px rgba(0,0,0,.25); z-index:6; border-width:3px; }
+.card.disabled { opacity:.4; cursor:not-allowed; pointer-events:none; }
+.card.def-highlight { border-color:var(--blue2) !important; }
+.card.def-highlight:hover { box-shadow:0 8px 18px rgba(52,152,219,.4); }
+.card[data-type=attack]  { border-color:var(--atk-bd); background:var(--atk-bg); }
+.card[data-type=defense] { border-color:var(--def-bd); background:var(--def-bg); }
+.card[data-type=item]    { border-color:var(--itm-bd); background:var(--itm-bg); }
+.card[data-type=miracle] { border-color:var(--mir-bd); background:var(--mir-bg); }
+.card[data-type=attack].selected  { border-color:var(--red2); }
+.card[data-type=defense].selected { border-color:var(--blue2); }
+.card[data-type=item].selected    { border-color:var(--gold); }
+.card[data-type=miracle].selected { border-color:var(--mir-bd); }
 .card-icon {
-  height: 58px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 2rem;
-  border-bottom: 1.5px solid rgba(0,0,0,0.08);
-  background: rgba(255,255,255,0.5);
-  position: relative;
+  flex:1; display:flex; align-items:center; justify-content:center;
+  font-size:1.8rem; border-bottom:1.5px solid rgba(0,0,0,.08);
+  background:rgba(255,255,255,.45);
 }
-/* Placeholder for future image */
-.card-icon img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset:0; border-radius: 0; }
-
 .card-footer {
-  padding: 0.25rem 0.35rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  padding:.2rem .3rem; display:flex; align-items:center; justify-content:space-between;
 }
-.card-stat { font-size: 0.7rem; font-weight: 800; color: var(--text2); }
-.card-cost {
-  background: var(--gold2);
-  color: #4a2000;
-  font-size: 0.6rem; font-weight: 800;
-  padding: 0.1rem 0.35rem;
-  border-radius: 20px;
-}
+.card-stat { font-size:.62rem; font-weight:800; color:var(--text2); }
+.card-cost { background:var(--gold2); color:#4a2000; font-size:.55rem; font-weight:800;
+  padding:.1rem .32rem; border-radius:20px; }
 
 /* Action buttons row */
 .action-row {
-  display: flex; align-items: center; gap: 0.5rem;
-  margin-top: 0.5rem;
-  flex-wrap: wrap;
+  display:flex; align-items:center; gap:.4rem; margin-top:.4rem; flex-wrap:wrap;
 }
-.target-select {
-  font-family: inherit;
-  font-size: 0.78rem; font-weight: 700;
-  background: var(--panel);
-  border: 2px solid var(--border);
-  border-radius: 8px;
-  color: var(--text);
-  padding: 0.35rem 0.6rem;
-  cursor: pointer; outline: none;
-  max-width: 140px;
-}
-.target-select:focus { border-color: var(--header); }
-
 .act-btn {
-  font-family: inherit;
-  font-size: 0.72rem; font-weight: 800;
-  padding: 0.4rem 0.8rem;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.1s;
-  white-space: nowrap;
+  font-family:inherit; font-size:.7rem; font-weight:800;
+  padding:.38rem .75rem; border-radius:8px; border:none; cursor:pointer;
+  transition:all .1s; white-space:nowrap;
 }
-.act-btn:active { transform: translateY(1px); }
-.act-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none !important; }
-.act-attack { background: #e74c3c; color: #fff; box-shadow: 0 2px 0 #922b21; }
-.act-attack:hover:not(:disabled) { background: #c0392b; }
-.act-pray   { background: var(--gold2); color: #4a3000; box-shadow: 0 2px 0 #b8860b; }
-.act-pray:hover:not(:disabled) { background: #e0b020; }
-.act-end    { background: var(--green2); color: #fff; box-shadow: 0 2px 0 #1a7a40; }
-.act-end:hover:not(:disabled) { background: var(--green); }
-.act-use    { background: var(--blue2); color: #fff; box-shadow: 0 2px 0 #1a60a0; }
-.act-use:hover:not(:disabled) { background: var(--blue); }
+.act-btn:active { transform:translateY(1px); }
+.act-btn:disabled { opacity:.35; cursor:not-allowed; transform:none !important; }
+.act-attack { background:#e74c3c; color:#fff; box-shadow:0 2px 0 #922b21; }
+.act-attack:hover:not(:disabled) { background:#c0392b; }
+.act-pray   { background:var(--gold2); color:#4a3000; box-shadow:0 2px 0 #b8860b; }
+.act-pray:hover:not(:disabled)   { background:#e0b020; }
+.act-end    { background:var(--green2); color:#fff; box-shadow:0 2px 0 #1a7a40; }
+.act-end:hover:not(:disabled)    { background:var(--green); }
+.act-def    { background:var(--blue2); color:#fff; box-shadow:0 2px 0 #1a60a0; }
+.act-def:hover:not(:disabled)    { background:var(--blue); }
+.act-discard { background:#aaa; color:#fff; box-shadow:0 2px 0 #777; font-size:.62rem; }
+.act-discard:hover:not(:disabled){ background:#888; }
 
-/* Footer bar */
+/* ===== RIGHT ZONE: Player list ===== */
+.g-right {
+  background:var(--surface);
+  border-left:2px solid var(--border2);
+  display:flex; flex-direction:column;
+  overflow:hidden;
+}
+.right-header {
+  background:var(--header); color:#fff;
+  font-size:.65rem; font-weight:800;
+  letter-spacing:.1em; text-transform:uppercase;
+  padding:.35rem .7rem; flex-shrink:0;
+}
+.player-scroll { flex:1; overflow-y:auto; padding:.4rem .5rem; display:flex; flex-direction:column; gap:.35rem; }
+
+/* Player card in right panel */
+.pcard {
+  background:var(--panel); border:2px solid var(--border);
+  border-radius:10px; padding:.45rem .6rem;
+  transition:all .15s;
+}
+.pcard.active-turn { border-color:var(--gold); background:rgba(240,192,48,.1); box-shadow:0 0 0 2px var(--gold2); }
+.pcard.dead { opacity:.35; }
+.pcard.me   { border-color:var(--blue2); }
+
+.pcard-top { display:flex; align-items:center; gap:.4rem; margin-bottom:.3rem; }
+.pcard-dot { width:11px; height:11px; border-radius:50%; background:#aaa; border:2px solid #888; flex-shrink:0; }
+.pcard.active-turn .pcard-dot { background:var(--gold2); border-color:var(--gold); }
+.pcard.me .pcard-dot { background:var(--blue2); border-color:var(--blue); }
+.pcard-arrow { font-size:1rem; color:#e91e8c; display:none; }
+.pcard.active-turn .pcard-arrow { display:inline; }
+.pcard-name { flex:1; font-size:.78rem; font-weight:800; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+.pcard-stats { display:flex; gap:.35rem; flex-wrap:wrap; }
+.pstat { font-size:.68rem; font-weight:800; display:flex; align-items:center; gap:.2rem; }
+.pstat.hp { color:var(--green); }
+.pstat.mp { color:var(--blue); }
+.pstat.gd { color:var(--gold); }
+
+.pcard-hand { font-size:.6rem; color:var(--muted); margin-top:.25rem; font-style:italic; }
+
+/* DEF value display (right panel bottom, only when defending) */
+.def-value-display {
+  background:rgba(52,152,219,.12); border-top:2px solid var(--def-bd);
+  padding:.5rem .7rem; font-size:1rem; font-weight:800;
+  color:var(--blue); text-align:center; flex-shrink:0;
+  display:none;
+}
+.def-value-display.active { display:block; }
+
+/* Footer */
 .g-footer {
-  background: var(--footer);
-  height: 28px;
-  display: flex;
-  align-items: center;
-  padding: 0 0.8rem;
-  gap: 0.5rem;
-  flex-shrink: 0;
-  box-shadow: 0 -2px 0 var(--border2);
+  background:var(--footer); height:26px;
+  display:flex; align-items:center; padding:0 .8rem; gap:.5rem;
+  flex-shrink:0; box-shadow:0 -2px 0 var(--border2);
 }
-.footer-myname {
-  color: rgba(255,255,255,0.9);
-  font-size: 0.72rem; font-weight: 800;
-  margin-right: 0.5rem;
+.footer-name { color:rgba(255,255,255,.9); font-size:.7rem; font-weight:800; margin-right:.3rem; }
+.footer-btn  {
+  background:rgba(255,255,255,.2); border:none; color:#fff;
+  font-family:inherit; font-size:.65rem; font-weight:700;
+  padding:.15rem .6rem; border-radius:20px; cursor:pointer; transition:background .15s;
+  display:flex; align-items:center; gap:.25rem;
 }
-.footer-btn {
-  background: rgba(255,255,255,0.2);
-  border: none;
-  color: var(--white);
-  font-family: inherit;
-  font-size: 0.68rem; font-weight: 700;
-  padding: 0.2rem 0.7rem;
-  border-radius: 20px;
-  cursor: pointer;
-  display: flex; align-items: center; gap: 0.3rem;
-  transition: background 0.15s;
-}
-.footer-btn:hover { background: rgba(255,255,255,0.32); }
-.footer-spacer { flex: 1; }
+.footer-btn:hover { background:rgba(255,255,255,.32); }
+.footer-spacer { flex:1; }
+#footer-players { display:flex; gap:.3rem; align-items:center; }
 
 /* Float damage */
 .float-dmg {
-  position: fixed;
-  font-size: 1.6rem; font-weight: 800;
-  pointer-events: none; z-index: 999;
-  animation: floatUp 1.2s ease forwards;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  position:fixed; font-size:1.5rem; font-weight:800;
+  pointer-events:none; z-index:999;
+  animation:floatUp 1.2s ease forwards;
+  text-shadow:0 2px 8px rgba(0,0,0,.3);
 }
 @keyframes floatUp {
   0%   { opacity:1; transform:translateY(0) scale(1.1); }
-  100% { opacity:0; transform:translateY(-70px) scale(0.8); }
+  100% { opacity:0; transform:translateY(-65px) scale(.8); }
 }
 
-/* Overlay */
+/* Discard overlay */
+#discard-overlay {
+  position:fixed; inset:0; background:rgba(20,60,50,.88);
+  display:none; flex-direction:column; align-items:center; justify-content:center;
+  z-index:80; gap:.8rem; padding:1rem;
+}
+#discard-overlay.active { display:flex; }
+.discard-title { font-size:1.4rem; font-weight:800; color:#fff; text-align:center; }
+.discard-sub { color:rgba(255,255,255,.7); font-size:.85rem; font-weight:700; text-align:center; }
+.discard-hand { display:flex; gap:.4rem; flex-wrap:wrap; justify-content:center; max-width:700px; }
+.discard-count { font-size:.8rem; font-weight:700; color:var(--gold2); }
+
+/* Win overlay */
 #overlay {
-  position: fixed; inset: 0;
-  background: rgba(20,60,50,0.88);
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-  gap: 0.8rem;
+  position:fixed; inset:0; background:rgba(20,60,50,.9);
+  display:none; flex-direction:column; align-items:center; justify-content:center;
+  z-index:100; gap:.8rem;
 }
-#overlay.active { display: flex; }
-.ov-title {
-  font-size: clamp(2rem, 6vw, 4rem);
-  font-weight: 800;
-  color: var(--white);
-  text-shadow: 0 4px 16px rgba(0,0,0,0.4);
-  letter-spacing: 0.05em;
-  text-align: center;
-}
-.ov-sub {
-  color: rgba(255,255,255,0.7);
-  font-size: 1rem; font-weight: 700;
-  text-align: center;
-}
+#overlay.active { display:flex; }
+.ov-title { font-size:clamp(2rem,6vw,4rem); font-weight:800; color:#fff;
+  text-shadow:0 4px 16px rgba(0,0,0,.4); letter-spacing:.05em; text-align:center; }
+.ov-sub   { color:rgba(255,255,255,.7); font-size:1rem; font-weight:700; text-align:center; }
 
 /* Toast */
 #toast {
-  position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
-  background: var(--text);
-  color: var(--white);
-  font-size: 0.8rem; font-weight: 700;
-  padding: 0.5rem 1.2rem;
-  border-radius: 20px;
-  z-index: 200;
-  opacity: 0;
-  transition: opacity 0.25s;
-  pointer-events: none;
-  white-space: nowrap;
-  box-shadow: 0 4px 16px var(--shadow);
+  position:fixed; bottom:2rem; left:50%; transform:translateX(-50%);
+  background:var(--text); color:#fff;
+  font-size:.8rem; font-weight:700; padding:.5rem 1.2rem; border-radius:20px;
+  z-index:200; opacity:0; transition:opacity .25s; pointer-events:none;
+  white-space:nowrap; box-shadow:0 4px 16px var(--shadow);
 }
-#toast.show { opacity: 1; }
+#toast.show { opacity:1; }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+::-webkit-scrollbar { width:4px; height:4px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
 
-/* Responsive: collapse left panel on small screens */
-@media (max-width: 640px) {
-  .g-body { grid-template-columns: 1fr; }
-  .g-left { display: none; }
+@media(max-width:640px){
+  .g-body { grid-template-columns:160px 1fr; }
+  .g-right { display:none; }
 }
 </style>
 </head>
 <body>
 
-<!-- ==================== LOBBY ==================== -->
+<!-- ===== LOBBY ===== -->
 <div id="screen-lobby" class="screen active">
-  <div class="logo-wrap">
-    <div class="logo-main">PROPHET FIELD</div>
-    <div class="logo-sub">— The Battle for Divine Succession —</div>
-  </div>
+  <div><div class="logo-main">PROPHET FIELD</div><div class="logo-sub">— The Battle for Divine Succession —</div></div>
   <div class="lobby-row">
     <div class="lobby-panel">
-      <div class="lobby-panel-title">Your Name</div>
-      <div class="field">
-        <label>Prophet Name</label>
-        <input type="text" id="inp-name" placeholder="Prophet of Dawn" maxlength="16">
-      </div>
-      <div class="lobby-panel-title">Create Room</div>
-      <div class="field">
-        <label>Room Name</label>
-        <input type="text" id="inp-room-create" placeholder="divine-grounds" maxlength="20">
-      </div>
+      <div class="lp-title">Create Room</div>
+      <div class="field"><label>Prophet Name</label><input type="text" id="inp-name" placeholder="Prophet of Dawn" maxlength="16"></div>
+      <div class="field"><label>Room Name</label><input type="text" id="inp-room-create" placeholder="divine-grounds" maxlength="20"></div>
       <button class="btn btn-green" onclick="createRoom()">⚔ OPEN SANCTUARY</button>
     </div>
     <div class="lobby-panel">
-      <div class="lobby-panel-title">Join Room</div>
-      <div class="field">
-        <label>Prophet Name</label>
-        <input type="text" id="inp-name2" placeholder="Prophet of Dawn" maxlength="16">
-      </div>
-      <div class="field">
-        <label>Room Name</label>
-        <input type="text" id="inp-room-join" placeholder="divine-grounds" maxlength="20">
-      </div>
+      <div class="lp-title">Join Room</div>
+      <div class="field"><label>Prophet Name</label><input type="text" id="inp-name2" placeholder="Prophet of Dawn" maxlength="16"></div>
+      <div class="field"><label>Room Name</label><input type="text" id="inp-room-join" placeholder="divine-grounds" maxlength="20"></div>
       <button class="btn btn-outline" onclick="joinRoom()">🚪 ENTER SANCTUARY</button>
     </div>
   </div>
   <div id="status-msg">Awaiting the call of fate...</div>
 </div>
 
-<!-- ==================== WAITING ==================== -->
+<!-- ===== WAITING ===== -->
 <div id="screen-waiting" class="screen">
   <div class="wait-panel">
-    <div class="lobby-panel-title">Sanctuary — Waiting Room</div>
+    <div class="lp-title">Sanctuary — Waiting Room</div>
     <div class="room-code-box" onclick="copyRoom()" title="Click to copy">
       <div class="room-code-label">Room Name — Click to Copy</div>
       <div class="room-code-val" id="wait-room-name">—</div>
     </div>
-    <div class="lobby-panel-title">Prophets Gathered</div>
+    <div class="lp-title">Prophets Gathered</div>
     <div class="player-list" id="wait-player-list"></div>
     <div class="wait-actions">
       <button class="btn btn-green" id="btn-start" onclick="hostStart()" style="display:none;flex:2;">▶ BEGIN PROPHECY</button>
@@ -772,54 +537,37 @@ input[type="text"]::placeholder { color: #aaa; }
   <div id="status-wait" class="pulse">Waiting for prophets to gather...</div>
 </div>
 
-<!-- ==================== GAME ==================== -->
+<!-- ===== GAME ===== -->
 <div id="screen-game" class="screen">
-
-  <!-- Header -->
   <div class="g-header">
-    <div class="g-header-left">
-      <span class="g-title">隠れ乱闘</span><!-- room name shown here -->
-      <span class="gf-badge" id="gf-badge">G.F.1 / 100</span>
+    <div style="display:flex;align-items:center;gap:.5rem;">
+      <span class="g-title" id="g-room-title">隠れ乱闘</span>
+      <span class="gf-badge" id="gf-badge">G.F.1</span>
     </div>
-    <div class="g-header-right">
-      <button class="header-btn" onclick="toggleLog()">📜 Log</button>
+    <div style="display:flex;gap:.4rem;">
       <button class="header-btn" onclick="leaveRoom()">← Leave</button>
     </div>
   </div>
 
-  <!-- Body -->
   <div class="g-body">
 
-    <!-- Left panel -->
+    <!-- LEFT: used card + atk value -->
     <div class="g-left">
-      <!-- Active card (attacker's card being played, shown top-left) -->
-      <div class="active-card-display empty" id="active-card-display">
-        <div class="acd-icon" id="acd-icon">—</div>
-        <div class="acd-info">
-          <div class="acd-name" id="acd-name">—</div>
-          <div class="acd-stat" id="acd-stat">—</div>
-          <div class="acd-cost" id="acd-cost">¥0</div>
+      <div class="used-card-zone">
+        <div class="used-card-label">使用カード</div>
+        <div class="used-card-slot" id="used-card-slot">
+          <div style="color:rgba(255,255,255,.3);font-size:.7rem;">なし</div>
         </div>
       </div>
-      <!-- Atk value display -->
-      <div class="atk-big-display" id="atk-big-display">攻 0</div>
-      <!-- Player list -->
-      <div class="player-scroll" id="player-scroll"></div>
+      <div class="atk-display" id="atk-display">攻撃値: <span>—</span></div>
     </div>
 
-    <!-- Center panel -->
+    <!-- CENTER: target + defense + chat + hand -->
     <div class="g-center">
-
-      <!-- Opponent's last used card ("起こした奇跡") -->
-      <div class="opp-action-area">
-        <div class="opp-action-title">✦ 起こした奇跡 / Last Action</div>
-        <div class="opp-action-card" id="opp-action-card">
-          <div class="acd-icon" id="opp-icon" style="width:44px;min-width:44px;height:44px;font-size:1.5rem;border-radius:6px;">—</div>
-          <div class="opp-action-info acd-info">
-            <div class="acd-name" id="opp-name">—</div>
-            <div class="acd-stat" id="opp-stat" style="font-size:0.75rem;">—</div>
-          </div>
-        </div>
+      <!-- Target select zone -->
+      <div class="target-zone">
+        <span class="target-zone-label">ターゲット</span>
+        <div class="target-btns" id="target-btns">—</div>
       </div>
 
       <!-- Defense window -->
@@ -828,111 +576,142 @@ input[type="text"]::placeholder { color: #aaa; }
         <div class="def-timer-circle" id="def-timer">4</div>
       </div>
 
-      <!-- Battle log -->
-      <div class="broadcast-log" id="battle-log"></div>
+      <!-- Chat log -->
+      <div class="chat-area">
+        <div class="chat-log" id="chat-log"></div>
+        <div class="chat-input-row">
+          <input type="text" class="chat-input" id="chat-input" placeholder="お告げを送る..." maxlength="60" onkeydown="if(event.key==='Enter')sendChat()">
+          <button class="chat-send" onclick="sendChat()">送信</button>
+        </div>
+      </div>
 
       <!-- My area -->
       <div class="my-area">
         <div class="my-stat-bar">
           <span class="my-name" id="my-name-label">—</span>
-          <span class="stat-chip hp"><span class="icon">❤️</span><span id="my-hp">—</span></span>
-          <span class="stat-chip mp"><span class="icon">🔮</span><span id="my-mp">—</span></span>
-          <span class="stat-chip gd"><span class="icon">💰</span><span id="my-gold">—</span></span>
-          <span class="stat-chip" style="color:var(--muted);font-size:0.7rem;" id="my-hand-ct"></span>
+          <span class="stat-chip hp">❤️ <span id="my-hp">—</span></span>
+          <span class="stat-chip mp">🔮 <span id="my-mp">—</span></span>
+          <span class="stat-chip gd">💰 <span id="my-gold">—</span></span>
+          <span class="stat-chip" style="color:var(--muted);font-size:.7rem;" id="my-hand-ct">✋ 0</span>
         </div>
-        <div class="hand-area" id="hand-area"></div>
+        <div class="hand-wrap">
+          <div class="hand-row" id="hand-row-1"></div>
+          <div class="hand-row" id="hand-row-2"></div>
+        </div>
         <div class="action-row">
-          <select class="target-select" id="target-select"></select>
-          <button class="act-btn act-attack" id="btn-attack" onclick="doPlay()">⚔ Use Card</button>
-          <button class="act-btn act-pray"   id="btn-pray"   onclick="doPray()">🙏 Pray</button>
-          <button class="act-btn act-end"    id="btn-end"    onclick="doEnd()">↩ End Turn</button>
+          <button class="act-btn act-attack" id="btn-attack" onclick="doPlay()">⚔ 使用</button>
+          <button class="act-btn act-pray"   id="btn-pray"   onclick="doPray()">🙏 祈る</button>
+          <button class="act-btn act-end"    id="btn-end"    onclick="doEnd()">↩ ターン終了</button>
+          <button class="act-btn act-def"    id="btn-def"    onclick="doStackDef()" style="display:none;">🛡 防御追加</button>
         </div>
       </div>
+    </div>
 
-    </div><!-- /g-center -->
+    <!-- RIGHT: player list + def value -->
+    <div class="g-right">
+      <div class="right-header">⚔ 預言者一覧</div>
+      <div class="player-scroll" id="player-scroll"></div>
+      <div class="def-value-display" id="def-value-display">守備値: <span id="def-val-span">0</span></div>
+    </div>
+
   </div><!-- /g-body -->
 
-  <!-- Footer -->
   <div class="g-footer">
-    <span class="footer-myname" id="footer-myname">—</span>
-    <button class="footer-btn" onclick="scrollLogBottom()">📜 全体にお告げ</button>
-    <button class="footer-btn" onclick="scrollLogBottom()">⏱ お告げの記録</button>
+    <span class="footer-name" id="footer-name">—</span>
+    <button class="footer-btn" onclick="scrollChatBottom()">📜 お告げの記録</button>
     <div class="footer-spacer"></div>
-    <!-- Mini player health bars (bottom-right like screenshot) -->
-    <div id="footer-players" style="display:flex;gap:0.3rem;align-items:center;"></div>
+    <div id="footer-players"></div>
   </div>
-
 </div>
 
-<!-- Overlay -->
+<!-- Discard overlay -->
+<div id="discard-overlay">
+  <div class="discard-title">手札が多すぎます！</div>
+  <div class="discard-count" id="discard-count">— 枚捨てる必要があります</div>
+  <div class="discard-sub">捨てるカードをタップしてください</div>
+  <div class="discard-hand" id="discard-hand"></div>
+</div>
+
+<!-- Win overlay -->
 <div id="overlay">
   <div class="ov-title" id="ov-title">—</div>
   <div class="ov-sub"   id="ov-sub">—</div>
-  <button class="btn btn-green" style="max-width:200px;margin-top:0.8rem;" onclick="leaveRoom()">Return to Lobby</button>
+  <button class="btn btn-green" style="max-width:200px;margin-top:.8rem;" onclick="leaveRoom()">ロビーに戻る</button>
 </div>
 
 <div id="toast"></div>
 
 <script>
 // ================================================================
-// PROPHET FIELD v2 — Godfield-style UI
-// Host-relay P2P via PeerJS
+// PROPHET FIELD v3 — Full Godfield-accurate
 // ================================================================
 
-// ---- CARD POOL ----
-const CARD_POOL = [
-  { id:'atk_sword',   type:'attack',  name:'鉄の剣',      emoji:'⚔️',  atk:8,   cost:2  },
-  { id:'atk_spear',   type:'attack',  name:'聖なる槍',    emoji:'🔱',  atk:12,  cost:3  },
-  { id:'atk_fire',    type:'attack',  name:'炎の矢',      emoji:'🔥',  atk:15,  cost:4  },
-  { id:'atk_arrow',   type:'attack',  name:'暗黒の矢',    emoji:'🏹',  atk:10,  cost:2  },
-  { id:'atk_thunder', type:'attack',  name:'雷撃',        emoji:'⚡',  atk:18,  cost:5  },
-  { id:'atk_frost',   type:'attack',  name:'凍牙',        emoji:'❄️',  atk:13,  cost:3  },
-  { id:'atk_giant',   type:'attack',  name:'巨人の拳',    emoji:'👊',  atk:22,  cost:6  },
-  { id:'atk_curse',   type:'attack',  name:'呪詛',        emoji:'💢',  atk:9,   cost:2  },
-  { id:'def_shield',  type:'defense', name:'鉄の盾',      emoji:'🛡️',  def:10,  cost:2  },
-  { id:'def_barrier', type:'defense', name:'聖なる障壁',  emoji:'🔵',  def:15,  cost:4  },
-  { id:'def_reflect', type:'defense', name:'鏡の守り',    emoji:'🪞',  def:8,   reflect:true, cost:3 },
-  { id:'def_dodge',   type:'defense', name:'影踏み',      emoji:'💨',  def:999, cost:3  },
-  { id:'def_stone',   type:'defense', name:'石の壁',      emoji:'🪨',  def:20,  cost:5  },
-  { id:'itm_potion',  type:'item',    name:'秘薬',        emoji:'🧪',  heal:20, cost:3  },
-  { id:'itm_mana',    type:'item',    name:'魔力の結晶',  emoji:'💎',  mp:15,   cost:2  },
-  { id:'itm_coins',   type:'item',    name:'金貨袋',      emoji:'💰',  gold:15, cost:0  },
-  { id:'itm_ambrosia',type:'item',    name:'甘露',        emoji:'✨',  heal:40, cost:6  },
-  { id:'mir_smite',   type:'miracle', name:'神罰',        emoji:'☀️',  atk:25,  mpCost:15, cost:5 },
-  { id:'mir_plague',  type:'miracle', name:'疫病',        emoji:'💀',  aoe:8,   mpCost:20, cost:6 },
-  { id:'mir_bless',   type:'miracle', name:'祝福',        emoji:'🙌',  heal:30, mpCost:12, cost:4 },
-  { id:'mir_drain',   type:'miracle', name:'魂の収奪',    emoji:'🌑',  drain:15,mpCost:10, cost:4 },
+// ---- CARD POOL (adjusted for HP40/MP10/¥20) ----
+// ATK: max ~15 (about 37% of HP), MP cards use mpCost
+const CARDS = [
+  // ATTACK
+  {id:'atk_knife',  type:'attack',  name:'小刀',      emoji:'🗡️',  atk:4,  cost:1},
+  {id:'atk_sword',  type:'attack',  name:'鉄の剣',    emoji:'⚔️',  atk:6,  cost:2},
+  {id:'atk_spear',  type:'attack',  name:'聖槍',      emoji:'🔱',  atk:8,  cost:3},
+  {id:'atk_arrow',  type:'attack',  name:'暗黒の矢',  emoji:'🏹',  atk:5,  cost:2},
+  {id:'atk_fire',   type:'attack',  name:'炎の矢',    emoji:'🔥',  atk:7,  cost:3},
+  {id:'atk_thunder',type:'attack',  name:'雷撃',      emoji:'⚡',  atk:10, cost:4},
+  {id:'atk_giant',  type:'attack',  name:'巨人の拳',  emoji:'👊',  atk:12, cost:5},
+  {id:'atk_curse',  type:'attack',  name:'呪詛',      emoji:'💢',  atk:5,  cost:2},
+  {id:'atk_plus',   type:'attack',  name:'+攻撃',     emoji:'➕',  atk:3,  addAtk:true, cost:1}, // stackable
+  // DEFENSE
+  {id:'def_shield', type:'defense', name:'鉄の盾',    emoji:'🛡️',  def:4,  cost:1},
+  {id:'def_barrier',type:'defense', name:'聖なる障壁',emoji:'🔵',  def:7,  cost:3},
+  {id:'def_reflect',type:'defense', name:'鏡の守り',  emoji:'🪞',  def:5,  reflect:true, cost:3},
+  {id:'def_dodge',  type:'defense', name:'影踏み',    emoji:'💨',  def:999,cost:3},
+  {id:'def_stone',  type:'defense', name:'石の壁',    emoji:'🪨',  def:9,  cost:4},
+  {id:'def_plus',   type:'defense', name:'+守備',     emoji:'🔒',  def:3,  addDef:true, cost:1}, // stackable
+  // ITEM
+  {id:'itm_potion', type:'item',    name:'秘薬',      emoji:'🧪',  heal:10,cost:2},
+  {id:'itm_mana',   type:'item',    name:'魔力の結晶',emoji:'💎',  mp:5,   cost:2},
+  {id:'itm_coins',  type:'item',    name:'金貨袋',    emoji:'💰',  gold:10,cost:0},
+  {id:'itm_herb',   type:'item',    name:'癒しの草',  emoji:'🌿',  heal:6, cost:1},
+  // MIRACLE
+  {id:'mir_smite',  type:'miracle', name:'神罰',      emoji:'☀️',  atk:12, mpCost:5,  cost:0},
+  {id:'mir_plague', type:'miracle', name:'疫病',      emoji:'💀',  aoe:5,  mpCost:8,  cost:0},
+  {id:'mir_bless',  type:'miracle', name:'祝福',      emoji:'🙌',  heal:12,mpCost:4,  cost:0},
+  {id:'mir_drain',  type:'miracle', name:'魂の収奪',  emoji:'🌑',  drain:8,mpCost:4,  cost:0},
 ];
 
-const WEIGHTS = { attack:35, defense:25, item:25, miracle:15 };
-
-function drawCard() {
-  const r = Math.random() * 100;
-  let cum = 0, type = 'attack';
-  for (const [t,w] of Object.entries(WEIGHTS)) { cum+=w; if(r<cum){type=t;break;} }
-  const pool = CARD_POOL.filter(c=>c.type===type);
-  return { ...pool[Math.floor(Math.random()*pool.length)], uid: Math.random().toString(36).substr(2,8) };
+const WEIGHTS={attack:35,defense:25,item:25,miracle:15};
+function drawCard(){
+  const r=Math.random()*100; let cum=0,type='attack';
+  for(const [t,w] of Object.entries(WEIGHTS)){cum+=w;if(r<cum){type=t;break;}}
+  const pool=CARDS.filter(c=>c.type===type);
+  return{...pool[Math.floor(Math.random()*pool.length)],uid:Math.random().toString(36).substr(2,8)};
 }
-function drawHand(n=6) { return Array.from({length:n}, drawCard); }
+function drawHand(n=9){return Array.from({length:n},drawCard);}
 
 // ---- CONSTANTS ----
-const INIT_HP=100, INIT_MP=30, INIT_GOLD=20;
-const MAX_HAND=18, MAX_PLAYERS=9;
+const INIT_HP=40, INIT_MP=10, INIT_GOLD=20, MAX_STAT=99;
+const MAX_HAND=18, INIT_HAND=9, MAX_PLAYERS=9;
 const DEF_WINDOW_MS=4000;
 
 // ---- STATE ----
-let myName='', roomName='', isHost=false;
-let myId=null, myPIdx=-1;
-let peer=null, hostConn=null;
-let guestConns={};
+let myName='',roomName='',isHost=false;
+let myId=null,myPIdx=-1;
+let peer=null,hostConn=null,guestConns={};
 let GS=null;
 let logEntries=[];
+// Per-turn state (local)
 let selCardUid=null;
+let selectedTargetId=null;
 let pendingAtk=null;
-let defTimerInterval=null, defTimeout=null;
+// Stacking (host authoritative)
+let turnAtkStack=0;   // accumulated attack this turn (for +攻撃)
+let turnDefStack=0;   // accumulated defense (for +守備, stackable)
+let turnCardUsed=false; // has a non-additive card been used this turn?
+let myDefStack=0;     // my current defense stack being built
+let defTimerInterval=null,defTimeout=null;
+let discardCount=0;
 
 // ---- PEERJS ----
-function loadPeer(cb) {
+function loadPeer(cb){
   if(window.Peer){cb();return;}
   const s=document.createElement('script');
   s.src='https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js';
@@ -940,63 +719,54 @@ function loadPeer(cb) {
   document.head.appendChild(s);
 }
 
-// ---- UI ----
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
-function setStatus(m,c=''){const e=document.getElementById('status-msg');e.textContent=m;e.className=c;}
+// ---- UI HELPERS ----
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function setStatus(m,c=''){const e=document.getElementById('status-msg');if(e){e.textContent=m;e.className=c;}}
 function toast(m){const e=document.getElementById('toast');e.textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2500);}
 function copyRoom(){navigator.clipboard?.writeText(roomName).then(()=>toast('コピーしました！'));}
 function escH(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function scrollChatBottom(){const e=document.getElementById('chat-log');if(e)e.scrollTop=e.scrollHeight;}
 
 // ---- LOBBY ----
-function getMyName(){return document.getElementById('inp-name').value.trim()||document.getElementById('inp-name2').value.trim()||'Prophet';}
 function createRoom(){
   myName=document.getElementById('inp-name').value.trim()||'Prophet';
   roomName=document.getElementById('inp-room-create').value.trim();
-  if(!roomName){setStatus('ルーム名を入力してください','err');return;}
+  if(!roomName){setStatus('ルーム名を入力','err');return;}
   isHost=true; loadPeer(setupHost);
 }
 function joinRoom(){
   myName=document.getElementById('inp-name2').value.trim()||'Prophet';
   roomName=document.getElementById('inp-room-join').value.trim();
-  if(!roomName){setStatus('ルーム名を入力してください','err');return;}
+  if(!roomName){setStatus('ルーム名を入力','err');return;}
   isHost=false; loadPeer(setupGuest);
 }
 
 // ---- HOST ----
-function hostPeerId(r){ return 'pf2-host-'+r.toLowerCase().replace(/[^a-z0-9]/g,'-').substring(0,18); }
-
+function hostPeerId(r){return 'pf3h-'+r.toLowerCase().replace(/[^a-z0-9]/g,'-').substring(0,18);}
 function setupHost(){
   peer=new Peer(hostPeerId(roomName));
   peer.on('open',pid=>{
-    myId=pid;
-    GS=initGS();
-    addPlayer(myId,myName);
+    myId=pid; GS=initGS(); addPlayer(myId,myName);
     document.getElementById('wait-room-name').textContent=roomName;
     document.getElementById('btn-start').style.display='block';
-    renderWaiting();
-    showScreen('screen-waiting');
+    renderWaiting(); showScreen('screen-waiting');
   });
   peer.on('connection',conn=>{
     guestConns[conn.peer]=conn;
     conn.on('open',()=>conn.send({type:'welcome',roomName}));
     conn.on('data',d=>hostRecv(conn.peer,d));
-    conn.on('close',()=>{ delete guestConns[conn.peer]; onGuestDrop(conn.peer); });
-    conn.on('error',()=>{ delete guestConns[conn.peer]; });
+    conn.on('close',()=>{delete guestConns[conn.peer];onDrop(conn.peer);});
+    conn.on('error',()=>{delete guestConns[conn.peer];});
   });
   peer.on('error',e=>{
-    if(e.type==='unavailable-id') setStatus('ルーム名が使われています','err');
+    if(e.type==='unavailable-id')setStatus('ルーム名が使われています','err');
     else setStatus('Error: '+e.message,'err');
   });
 }
-
-// ---- GUEST ----
 let gRetry=0;
 function setupGuest(){
   gRetry=0; peer=new Peer();
-  peer.on('open',pid=>{ myId=pid; gConnect(); });
+  peer.on('open',pid=>{myId=pid;gConnect();});
   peer.on('error',e=>setStatus('Error: '+e.message,'err'));
 }
 function gConnect(){
@@ -1004,79 +774,76 @@ function gConnect(){
   setStatus('接続中... ('+gRetry+'/6)');
   const c=peer.connect(hostPeerId(roomName),{reliable:true});
   let opened=false;
-  c.on('open',()=>{ opened=true; hostConn=c; hostConn.send({type:'join',name:myName,peerId:myId}); });
+  c.on('open',()=>{opened=true;hostConn=c;hostConn.send({type:'join',name:myName,peerId:myId});});
   c.on('data',guestRecv);
-  c.on('close',()=>{ if(!opened&&gRetry<6){setTimeout(gConnect,1200);return;} if(GS?.phase==='playing'){toast('ホストとの接続が切れました');leaveRoom();} });
-  c.on('error',()=>{ if(gRetry<6)setTimeout(gConnect,1200); else setStatus('ルームに接続できません','err'); });
+  c.on('close',()=>{if(!opened&&gRetry<6){setTimeout(gConnect,1200);return;}if(GS?.phase==='playing'){toast('ホストとの接続が切れました');leaveRoom();}});
+  c.on('error',()=>{if(gRetry<6)setTimeout(gConnect,1200);else setStatus('接続できません','err');});
 }
 
 // ---- HOST RECV ----
 function hostRecv(pid,d){
   if(d.type==='join'){
-    if(GS.phase!=='waiting'){guestConns[pid]?.send({type:'err',msg:'ゲームはすでに開始しています'});return;}
-    if(GS.players.length>=MAX_PLAYERS){guestConns[pid]?.send({type:'err',msg:'ルームが満員です'});return;}
-    addPlayer(pid,d.name);
-    broadcastGS(); renderWaiting();
+    if(GS.phase!=='waiting'){guestConns[pid]?.send({type:'err',msg:'ゲーム開始済み'});return;}
+    if(GS.players.length>=MAX_PLAYERS){guestConns[pid]?.send({type:'err',msg:'満員'});return;}
+    addPlayer(pid,d.name); broadcastGS(); renderWaiting();
   }
   if(d.type==='action') processAction(pid,d.action);
+  if(d.type==='chat') broadcastChat(d.name,d.msg);
 }
-
 // ---- GUEST RECV ----
 function guestRecv(d){
-  if(d.type==='welcome'){ document.getElementById('wait-room-name').textContent=d.roomName||roomName; showScreen('screen-waiting'); }
+  if(d.type==='welcome'){document.getElementById('wait-room-name').textContent=d.roomName||roomName;showScreen('screen-waiting');}
   if(d.type==='gs_update'){
-    GS=d.gs;
-    myPIdx=GS.players.findIndex(p=>p.peerId===myId);
-    if(GS.phase==='waiting') renderWaiting();
-    else if(GS.phase==='playing') renderGame();
-    else if(GS.phase==='over') showOver();
+    GS=d.gs; myPIdx=GS.players.findIndex(p=>p.peerId===myId);
+    if(GS.phase==='waiting')renderWaiting();
+    else if(GS.phase==='playing'){renderGame();checkDiscardNeeded();}
+    else if(GS.phase==='over')showOver();
   }
   if(d.type==='err') toast(d.msg);
-  if(d.type==='atk_window'){ pendingAtk=d; showDefWindow(d); }
-  if(d.type==='atk_resolved'){ clearDefWindow(); applyAtkResult(d); }
+  if(d.type==='atk_window'){pendingAtk=d;showDefWindow(d);}
+  if(d.type==='atk_resolved'){clearDefWindow();applyAtkResult(d);}
+  if(d.type==='chat_msg') addChatLine(d.name,d.msg);
 }
 
-// ---- GS HELPERS ----
-function initGS(){ return {players:[],turnIndex:0,phase:'waiting',round:0,hostPeerId:myId}; }
+// ---- GS ----
+function initGS(){return{players:[],turnIndex:0,phase:'waiting',round:1,hostPeerId:myId,turnState:{atkStack:0,defStack:0,cardUsed:false}};}
 function addPlayer(pid,name){
-  GS.players.push({peerId:pid,name,hp:INIT_HP,mp:INIT_MP,gold:INIT_GOLD,hand:drawHand(6),alive:true});
+  GS.players.push({peerId:pid,name,hp:INIT_HP,mp:INIT_MP,gold:INIT_GOLD,hand:drawHand(INIT_HAND),alive:true});
 }
 function sanitizeGS(){
-  return {...GS, players:GS.players.map(p=>({...p,hand:p.hand.map(()=>null),handCount:p.hand.length}))};
+  return{...GS,players:GS.players.map(p=>({...p,hand:p.hand.map(()=>null),handCount:p.hand.length}))};
 }
 function broadcastGS(){
   Object.entries(guestConns).forEach(([pid,conn])=>{
     const pIdx=GS.players.findIndex(p=>p.peerId===pid);
-    const personal={...sanitizeGS()};
-    if(pIdx>=0) personal.players=personal.players.map((p,i)=>i===pIdx?{...p,hand:GS.players[i].hand}:p);
-    conn.send({type:'gs_update',gs:personal});
+    const sg=JSON.parse(JSON.stringify(sanitizeGS()));
+    if(pIdx>=0)sg.players[pIdx].hand=GS.players[pIdx].hand;
+    conn.send({type:'gs_update',gs:sg});
   });
   myPIdx=GS.players.findIndex(p=>p.peerId===myId);
-  if(GS.phase==='waiting') renderWaiting();
-  else if(GS.phase==='playing') renderGame();
-  else if(GS.phase==='over') showOver();
+  if(GS.phase==='waiting')renderWaiting();
+  else if(GS.phase==='playing'){renderGame();checkDiscardNeeded();}
+  else if(GS.phase==='over')showOver();
 }
-function broadcastMsg(msg){ Object.values(guestConns).forEach(c=>c.send(msg)); }
-
-function onGuestDrop(pid){
-  if(!GS) return;
-  const p=GS.players.find(p=>p.peerId===pid);
-  if(!p) return;
-  if(GS.phase==='waiting'){ GS.players=GS.players.filter(p=>p.peerId!==pid); broadcastGS(); renderWaiting(); }
-  else if(GS.phase==='playing'){ p.alive=false; p.hp=0; addLog({type:'system',text:escH(p.name)+'が退場しました。'}); broadcastGS(); checkVictory(); }
+function broadcastMsg(msg){Object.values(guestConns).forEach(c=>c.send(msg));}
+function onDrop(pid){
+  if(!GS)return;
+  const p=GS.players.find(p=>p.peerId===pid);if(!p)return;
+  if(GS.phase==='waiting'){GS.players=GS.players.filter(p=>p.peerId!==pid);broadcastGS();renderWaiting();}
+  else if(GS.phase==='playing'){p.alive=false;p.hp=0;addLog({type:'system',text:escH(p.name)+'が退場。'});broadcastGS();checkVictory();}
 }
 
 // ---- WAITING UI ----
 function renderWaiting(){
   const list=document.getElementById('wait-player-list');
-  if(!list||!GS) return;
+  if(!list||!GS)return;
   list.innerHTML='';
   GS.players.forEach((p,i)=>{
     const el=document.createElement('div');
     el.className='player-item';
     const badges=[];
-    if(i===0) badges.push('<span class="badge badge-host">HOST</span>');
-    if(p.peerId===myId) badges.push('<span class="badge badge-you">YOU</span>');
+    if(i===0)badges.push('<span class="badge badge-host">HOST</span>');
+    if(p.peerId===myId)badges.push('<span class="badge badge-you">YOU</span>');
     el.innerHTML=badges.join('')+'<span>'+escH(p.name)+'</span>';
     list.appendChild(el);
   });
@@ -1090,73 +857,87 @@ function renderWaiting(){
 
 // ---- START ----
 function hostStart(){
-  if(!isHost||GS.players.length<2) return;
-  GS.phase='playing'; GS.round=1; GS.turnIndex=0; logEntries=[];
+  if(!isHost||GS.players.length<2)return;
+  GS.phase='playing';GS.round=1;GS.turnIndex=0;logEntries=[];
+  GS.turnState={atkStack:0,defStack:0,cardUsed:false};
   addLog({type:'system',text:'予言が始まった。第1ラウンド。'});
-  broadcastGS();
-  showScreen('screen-game');
+  broadcastGS(); showScreen('screen-game');
 }
 
 // ---- RENDER GAME ----
 function renderGame(){
   showScreen('screen-game');
-  if(!GS) return;
+  if(!GS)return;
   const me=GS.players[myPIdx>=0?myPIdx:0];
-  if(!me) return;
-
+  if(!me)return;
   const turnP=GS.players[GS.turnIndex];
   const isMyTurn=turnP?.peerId===myId;
+  const ts=GS.turnState||{};
 
-  // Header badge
-  document.getElementById('gf-badge').textContent=`G.F.${GS.round} / 100`;
-
-  // My stats
+  document.getElementById('gf-badge').textContent='G.F.'+GS.round;
+  document.getElementById('g-room-title').textContent=roomName||'隠れ乱闘';
   document.getElementById('my-name-label').textContent=me.name;
   document.getElementById('my-hp').textContent=me.hp;
   document.getElementById('my-mp').textContent=me.mp;
   document.getElementById('my-gold').textContent=me.gold;
   document.getElementById('my-hand-ct').textContent='✋ '+(me.hand?.filter(Boolean).length||0);
-  document.getElementById('footer-myname').textContent=me.name;
+  document.getElementById('footer-name').textContent=me.name;
 
-  // Player scroll (left panel)
+  // ATK display (left bottom)
+  const atkEl=document.getElementById('atk-display');
+  if(ts.atkStack>0){
+    atkEl.innerHTML='攻撃値: <span>'+ts.atkStack+'</span>';
+  } else {
+    atkEl.innerHTML='攻撃値: <span>—</span>';
+  }
+
+  // DEF display (right bottom) — only when defending stacks are active
+  const defEl=document.getElementById('def-value-display');
+  const defSpan=document.getElementById('def-val-span');
+  if(ts.defStack>0&&isMyTurn){
+    defEl.classList.add('active');
+    defSpan.textContent=ts.defStack;
+  } else {
+    defEl.classList.remove('active');
+  }
+
   renderPlayerList();
-
-  // Footer mini bars
   renderFooterPlayers();
+  renderHand(me,isMyTurn,ts);
+  renderTargetBtns(isMyTurn);
 
-  // Hand
-  renderHand(me, isMyTurn);
-
-  // Target
-  renderTargetSel(isMyTurn);
-
-  // Buttons
+  // Action buttons
   document.getElementById('btn-attack').disabled=!isMyTurn||!selCardUid;
-  document.getElementById('btn-pray').disabled=!isMyTurn;
+  document.getElementById('btn-pray').disabled=!isMyTurn||ts.cardUsed;
   document.getElementById('btn-end').disabled=!isMyTurn;
+  // Show defense stack button if defense cards selected and it's my turn
+  const btnDef=document.getElementById('btn-def');
+  btnDef.style.display='none'; // managed per card selection
 
-  // Log
-  renderLog();
+  renderChatLog();
 }
 
 function renderPlayerList(){
   const el=document.getElementById('player-scroll');
-  if(!el||!GS) return;
+  if(!el||!GS)return;
   el.innerHTML='';
   GS.players.forEach((p,i)=>{
     const isMe=p.peerId===myId;
     const isTurn=i===GS.turnIndex&&p.alive;
     const div=document.createElement('div');
-    div.className='pbar'+(isTurn?' active-turn':'')+(isMe?' me':'')+(p.alive?'':' dead');
+    div.className='pcard'+(isTurn?' active-turn':'')+(p.alive?'':' dead')+(isMe?' me':'');
     div.innerHTML=`
-      <div class="pbar-dot"></div>
-      <div class="turn-arrow">→</div>
-      <div class="pbar-name">${escH(p.name)}</div>
-      <div class="pbar-stats">
-        <span class="pbar-hp">HP${p.hp}</span>
-        <span class="pbar-mp">MP${p.mp}</span>
-        <span class="pbar-gd">¥${p.gold}</span>
+      <div class="pcard-top">
+        <div class="pcard-dot"></div>
+        <span class="pcard-arrow">→</span>
+        <div class="pcard-name">${escH(p.name)}${isMe?' (you)':''}</div>
       </div>
+      <div class="pcard-stats">
+        <span class="pstat hp">HP ${p.hp}</span>
+        <span class="pstat mp">MP ${p.mp}</span>
+        <span class="pstat gd">¥${p.gold}</span>
+      </div>
+      <div class="pcard-hand">✋ ${p.handCount??p.hand?.filter(Boolean).length??'?'}枚</div>
     `;
     el.appendChild(div);
   });
@@ -1164,357 +945,505 @@ function renderPlayerList(){
 
 function renderFooterPlayers(){
   const el=document.getElementById('footer-players');
-  if(!el||!GS) return;
+  if(!el||!GS)return;
   el.innerHTML='';
   GS.players.forEach(p=>{
-    const isMe=p.peerId===myId;
     const isTurn=GS.players[GS.turnIndex]?.peerId===p.peerId;
-    const bar=document.createElement('div');
-    bar.style.cssText=`display:flex;align-items:center;gap:2px;background:rgba(255,255,255,0.2);border-radius:4px;padding:2px 5px;font-size:0.6rem;font-weight:700;color:#fff;${isTurn?'background:rgba(255,220,50,0.35);':''}${!p.alive?'opacity:0.35;':''}`;
-    bar.textContent=p.name.substring(0,4)+(isMe?'●':'');
-    el.appendChild(bar);
+    const div=document.createElement('div');
+    div.style.cssText=`display:flex;align-items:center;background:${isTurn?'rgba(240,192,48,.4)':'rgba(255,255,255,.2)'};border-radius:4px;padding:1px 6px;font-size:.6rem;font-weight:700;color:#fff;${!p.alive?'opacity:.35;':''}`;
+    div.textContent=p.name.substring(0,4);
+    el.appendChild(div);
   });
 }
 
-let selectedCardData=null;
-function renderHand(me,isMyTurn){
-  const area=document.getElementById('hand-area');
-  if(!area) return;
-  area.innerHTML='';
-  (me.hand||[]).filter(Boolean).forEach(card=>{
+// Target buttons (like Godfield's target row)
+function renderTargetBtns(isMyTurn){
+  const wrap=document.getElementById('target-btns');
+  if(!wrap||!GS)return;
+  wrap.innerHTML='';
+  GS.players.forEach(p=>{
+    if(!p.alive||p.peerId===myId)return;
+    const btn=document.createElement('button');
+    btn.className='target-btn'+(p.peerId===selectedTargetId?' selected':'')+(p.alive?'':' dead');
+    btn.textContent=p.name;
+    btn.onclick=()=>{
+      selectedTargetId=p.peerId;
+      renderTargetBtns(isMyTurn);
+    };
+    if(!isMyTurn) btn.disabled=true;
+    wrap.appendChild(btn);
+  });
+  // Auto-select first if none
+  if(!selectedTargetId&&wrap.children.length>0){
+    const first=GS.players.find(p=>p.alive&&p.peerId!==myId);
+    if(first) selectedTargetId=first.peerId;
+    renderTargetBtns(isMyTurn);
+  }
+}
+
+// Hand: 2 rows of 9
+function renderHand(me,isMyTurn,ts){
+  const row1=document.getElementById('hand-row-1');
+  const row2=document.getElementById('hand-row-2');
+  if(!row1||!row2)return;
+  row1.innerHTML=''; row2.innerHTML='';
+  const hand=(me.hand||[]).filter(Boolean);
+  const isDefMode=!!pendingAtk;
+  const amTarget=isDefMode&&GS.players[myPIdx]?.peerId===pendingAtk?.targetId;
+
+  hand.forEach((card,idx)=>{
     const isSelected=card.uid===selCardUid;
-    const isDefenseMode=!!pendingAtk;
-    const canUse=isMyTurn&&!isDefenseMode;
     const isDefCard=card.type==='defense';
-    const canDefend=isDefenseMode&&isDefCard&&GS.players[myPIdx]?.peerId===pendingAtk?.targetId;
+    const canUse=isMyTurn&&!isDefMode;
+    const canDefend=amTarget&&isDefCard;
+    const canStack=(card.addAtk||card.addDef)&&isMyTurn&&ts.cardUsed; // +cards only after main card used? Actually: +atk can be stacked after attack, +def can be stacked anytime in your turn
 
     const div=document.createElement('div');
     div.className='card'+(isSelected?' selected':'');
-    if(canDefend) div.classList.add('defense-highlight');
-    if(!canUse&&!canDefend) div.classList.add('disabled');
+    if(canDefend)div.classList.add('def-highlight');
+    if(!canUse&&!canDefend)div.classList.add('disabled');
     div.dataset.type=card.type;
 
-    const costLabel=card.mpCost?`🔮${card.mpCost}`:(card.cost?`¥${card.cost}`:'');
+    const costStr=card.mpCost?`🔮${card.mpCost}`:(card.cost?`¥${card.cost}`:'');
     div.innerHTML=`
       <div class="card-icon">${card.emoji}</div>
       <div class="card-footer">
         <span class="card-stat">${cardStatStr(card)}</span>
-        ${costLabel?`<span class="card-cost">${costLabel}</span>`:''}
+        ${costStr?`<span class="card-cost">${costStr}</span>`:''}
       </div>
     `;
-    div.title=card.name;
+    div.title=card.name+(card.addAtk?' (+攻撃スタック可)':card.addDef?' (+守備スタック可)':'');
     div.onclick=()=>{
-      if(canDefend){ submitDefense(card.uid); return; }
-      if(!canUse) return;
+      if(canDefend){submitDefense(card.uid);return;}
+      if(!canUse)return;
       selCardUid=selCardUid===card.uid?null:card.uid;
-      selectedCardData=selCardUid?card:null;
-      renderHand(me,isMyTurn);
-      updateActiveCardDisplay(selCardUid?card:null);
+      const isMyT=GS.players[GS.turnIndex]?.peerId===myId;
+      renderHand(me,isMyT,ts);
+      updateUsedCardDisplay(selCardUid?card:null);
       document.getElementById('btn-attack').disabled=!selCardUid;
     };
-    area.appendChild(div);
+    (idx<9?row1:row2).appendChild(div);
   });
 }
 
 function cardStatStr(c){
-  if(c.def===999) return '💨DODGE';
-  if(c.atk)  return '攻'+c.atk;
-  if(c.def)  return '守'+c.def;
-  if(c.heal) return '+HP'+c.heal;
-  if(c.mp)   return '+MP'+c.mp;
-  if(c.gold) return '+¥'+c.gold;
-  if(c.aoe)  return '全'+c.aoe;
+  if(c.def===999)return '💨回避';
+  if(c.addAtk)return '+攻'+c.atk;
+  if(c.addDef)return '+守'+c.def;
+  if(c.atk)return '攻'+c.atk;
+  if(c.def)return '守'+c.def;
+  if(c.heal)return '+HP'+c.heal;
+  if(c.mp)return '+MP'+c.mp;
+  if(c.gold)return '+¥'+c.gold;
+  if(c.aoe)return '全'+c.aoe;
   if(c.drain)return '奪'+c.drain;
   return '—';
 }
 
-function updateActiveCardDisplay(card){
-  const el=document.getElementById('active-card-display');
-  const big=document.getElementById('atk-big-display');
-  if(!card){ el.classList.add('empty'); big.classList.remove('active'); return; }
-  el.classList.remove('empty');
-  document.getElementById('acd-icon').textContent=card.emoji;
-  document.getElementById('acd-name').textContent=card.name;
-  document.getElementById('acd-stat').textContent=cardStatStr(card);
-  document.getElementById('acd-cost').textContent='¥'+(card.cost||0);
-  if(card.atk||card.aoe||card.drain){
-    big.classList.add('active');
-    big.textContent='攻'+(card.atk||card.aoe||card.drain);
-  } else {
-    big.classList.remove('active');
+function updateUsedCardDisplay(card){
+  const slot=document.getElementById('used-card-slot');
+  const atkEl=document.getElementById('atk-display');
+  if(!card){
+    slot.classList.remove('filled');
+    slot.innerHTML='<div style="color:rgba(255,255,255,.3);font-size:.7rem;">なし</div>';
+    return;
   }
-}
-
-function renderTargetSel(isMyTurn){
-  const sel=document.getElementById('target-select');
-  const prev=sel.value;
-  sel.innerHTML='';
-  GS.players.forEach(p=>{
-    if(!p.alive||p.peerId===myId) return;
-    const opt=document.createElement('option');
-    opt.value=p.peerId;
-    opt.textContent=p.name;
-    sel.appendChild(opt);
-  });
-  if(prev) sel.value=prev;
+  slot.classList.add('filled');
+  slot.innerHTML=`<div class="used-card-emoji">${card.emoji}</div><div class="used-card-name">${escH(card.name)}</div>`;
+  if(card.atk){
+    const ts=GS?.turnState||{};
+    atkEl.innerHTML='攻撃値: <span>'+(ts.atkStack+card.atk)+'</span>';
+  }
 }
 
 // ---- ACTIONS ----
 function sendAction(action){
-  if(isHost) processAction(myId,action);
+  if(isHost)processAction(myId,action);
   else hostConn?.send({type:'action',action});
 }
 
 function doPlay(){
-  if(!selCardUid){ toast('カードを選んでください'); return; }
+  if(!selCardUid){toast('カードを選んでください');return;}
   const me=GS.players[myPIdx];
   const card=me?.hand?.find(c=>c&&c.uid===selCardUid);
-  if(!card) return;
+  if(!card)return;
 
+  // Item / healing miracle: no target needed
   if(card.type==='item'||(card.type==='miracle'&&card.heal)){
     sendAction({type:'use_item',cardUid:selCardUid});
-    selCardUid=null; selectedCardData=null;
-    updateActiveCardDisplay(null);
-    return;
+    selCardUid=null; updateUsedCardDisplay(null); return;
   }
-  const targetId=document.getElementById('target-select').value;
-  if(!targetId&&!card.aoe){ toast('ターゲットを選んでください'); return; }
+  // +攻撃 stacking
+  if(card.addAtk){
+    sendAction({type:'add_atk',cardUid:selCardUid});
+    selCardUid=null; updateUsedCardDisplay(null); return;
+  }
+  // +守備 stacking
+  if(card.addDef){
+    sendAction({type:'add_def',cardUid:selCardUid});
+    selCardUid=null; updateUsedCardDisplay(null); return;
+  }
+  // AOE miracle (no target)
+  if(card.aoe){
+    sendAction({type:'attack',cardUid:selCardUid,targetId:null});
+    selCardUid=null; updateUsedCardDisplay(null); return;
+  }
+  const targetId=selectedTargetId;
+  if(!targetId){toast('ターゲットを選んでください');return;}
   sendAction({type:'attack',cardUid:selCardUid,targetId});
-  selCardUid=null; selectedCardData=null;
-  updateActiveCardDisplay(null);
+  selCardUid=null; updateUsedCardDisplay(null);
 }
 
-function doPray(){ sendAction({type:'pray'}); }
-function doEnd() { sendAction({type:'end_turn'}); }
+function doPray(){sendAction({type:'pray'});}
+function doEnd() {sendAction({type:'end_turn'});}
 
 // ---- PROCESS ACTIONS (HOST) ----
 function processAction(pid,action){
   const pIdx=GS.players.findIndex(p=>p.peerId===pid);
-  if(pIdx<0) return;
+  if(pIdx<0)return;
   const player=GS.players[pIdx];
+  const ts=GS.turnState;
 
   if(action.type==='attack'){
-    if(GS.turnIndex!==pIdx){ guestConns[pid]?.send({type:'err',msg:'あなたのターンではありません'}); return; }
+    if(GS.turnIndex!==pIdx){guestConns[pid]?.send({type:'err',msg:'あなたのターンではありません'});return;}
+    if(ts.cardUsed){guestConns[pid]?.send({type:'err',msg:'このターンはすでにカードを使いました'});return;}
     const card=player.hand.find(c=>c&&c.uid===action.cardUid);
-    if(!card) return;
-    if(card.type!=='attack'&&card.type!=='miracle'){ guestConns[pid]?.send({type:'err',msg:'攻撃カードではありません'}); return; }
+    if(!card)return;
     if(card.mpCost&&player.mp<card.mpCost){
-      const msg='MPが足りません';
-      guestConns[pid]?.send({type:'err',msg}); if(isHost&&pid===myId) toast(msg); return;
+      const m='MPが足りません';
+      guestConns[pid]?.send({type:'err',msg:m});if(isHost&&pid===myId)toast(m);return;
     }
-    if(card.mpCost) player.mp-=card.mpCost;
+    if(card.mpCost)player.mp-=card.mpCost;
     player.hand=player.hand.filter(c=>!c||c.uid!==action.cardUid);
+    ts.cardUsed=true;
+    const totalAtk=(card.atk||0)+ts.atkStack;
 
     // AOE
     if(card.aoe){
-      GS.players.forEach(p=>{ if(p.alive&&p.peerId!==pid){ p.hp=Math.max(0,p.hp-card.aoe); checkDeath(p); } });
-      addLog({type:'attack',actor:player.name,target:'全員',card:card.name,emoji:card.emoji,dmg:card.aoe,blocked:0,reflected:0});
-      setOppAction(card,cardStatStr(card));
-      broadcastGS(); checkVictory(); return;
+      const aoeAtk=(card.aoe||0)+ts.atkStack;
+      GS.players.forEach(p=>{if(p.alive&&p.peerId!==pid){p.hp=Math.max(0,p.hp-aoeAtk);checkDeath(p);}});
+      addLog({type:'attack',actor:player.name,target:'全員',card:card.name,emoji:card.emoji,dmg:aoeAtk,blocked:0,reflected:0});
+      replenishHand(player);
+      ts.atkStack=0;
+      broadcastGS();checkVictory();return;
     }
     // Drain
     if(card.drain){
       const tgt=GS.players.find(p=>p.peerId===action.targetId&&p.alive);
-      if(!tgt) return;
+      if(!tgt)return;
       const actual=Math.min(card.drain,tgt.hp);
-      tgt.hp-=actual; player.hp=Math.min(INIT_HP,player.hp+actual);
+      tgt.hp-=actual;player.hp=Math.min(MAX_STAT,player.hp+actual);
       addLog({type:'attack',actor:player.name,target:tgt.name,card:card.name,emoji:card.emoji,dmg:actual,blocked:0,reflected:0});
-      setOppAction(card,cardStatStr(card));
-      checkDeath(tgt); broadcastGS(); checkVictory(); return;
+      replenishHand(player);
+      checkDeath(tgt);broadcastGS();checkVictory();return;
     }
     // Normal attack → defense window
     const tgt=GS.players.find(p=>p.peerId===action.targetId&&p.alive);
-    if(!tgt) return;
-    pendingAtk={attackerId:pid,targetId:action.targetId,cardUid:action.cardUid,cardName:card.name,cardEmoji:card.emoji,damage:card.atk,attackerName:player.name,targetName:tgt.name};
+    if(!tgt)return;
+    pendingAtk={attackerId:pid,targetId:action.targetId,cardUid:action.cardUid,cardName:card.name,cardEmoji:card.emoji,damage:totalAtk,attackerName:player.name,targetName:tgt.name,defStack:0};
     broadcastMsg({type:'atk_window',...pendingAtk});
-    // Also show on host side
-    if(isHost){ showDefWindow(pendingAtk); }
+    if(isHost)showDefWindow(pendingAtk);
     startDefTimer();
+    // Replenish after attack resolved (done in resolveAtk)
+  }
+
+  if(action.type==='add_atk'){
+    if(GS.turnIndex!==pIdx)return;
+    const card=player.hand.find(c=>c&&c.uid===action.cardUid);
+    if(!card||!card.addAtk)return;
+    player.hand=player.hand.filter(c=>!c||c.uid!==action.cardUid);
+    ts.atkStack+=(card.atk||0);
+    addLog({type:'system',text:escH(player.name)+'が'+escH(card.name)+'を積んだ。攻撃値+'+card.atk+'（合計'+ts.atkStack+'）'});
+    replenishHand(player,1);
+    broadcastGS();
+  }
+
+  if(action.type==='add_def'){
+    if(GS.turnIndex!==pIdx)return;
+    const card=player.hand.find(c=>c&&c.uid===action.cardUid);
+    if(!card||!card.addDef)return;
+    player.hand=player.hand.filter(c=>!c||c.uid!==action.cardUid);
+    ts.defStack+=(card.def||0);
+    addLog({type:'system',text:escH(player.name)+'が'+escH(card.name)+'を積んだ。守備値+'+card.def+'（合計'+ts.defStack+'）'});
+    replenishHand(player,1);
+    broadcastGS();
   }
 
   if(action.type==='defend'){
-    if(!pendingAtk||pendingAtk.targetId!==pid) return;
-    const tgt=GS.players.find(p=>p.peerId===pid);
-    if(!tgt) return;
+    if(!pendingAtk||pendingAtk.targetId!==pid)return;
+    const tgt=GS.players.find(p=>p.peerId===pid);if(!tgt)return;
     const defCard=tgt.hand.find(c=>c&&c.uid===action.cardUid);
-    if(!defCard||defCard.type!=='defense') return;
+    if(!defCard||defCard.type!=='defense')return;
     tgt.hand=tgt.hand.filter(c=>!c||c.uid!==action.cardUid);
+    pendingAtk.defStack=(pendingAtk.defStack||0)+(defCard.def===999?999:defCard.def);
+    pendingAtk.lastDefCard=defCard;
+    // Defense is stackable: update window but keep it open for more
+    // Actually resolve immediately for simplicity (can stack via multiple defend actions before timer)
     resolveAtk(defCard);
   }
 
   if(action.type==='pray'){
-    if(GS.turnIndex!==pIdx) return;
-    if(player.hand.length>=MAX_HAND){ const m='手札がいっぱいです'; guestConns[pid]?.send({type:'err',msg:m}); if(isHost&&pid===myId)toast(m); return; }
-    const drawn=Array.from({length:1},drawCard);
-    drawn.forEach(c=>player.hand.push(c));
+    if(GS.turnIndex!==pIdx)return;
+    const newCard=drawCard();
+    player.hand.push(newCard);
     addLog({type:'system',text:escH(player.name)+'は祈りを捧げ、カードを1枚引いた。'});
-    advanceTurn(); broadcastGS();
+    ts.cardUsed=true;
+    checkHandOverflow(player);
+    advanceTurn();broadcastGS();
   }
 
   if(action.type==='end_turn'){
-    if(GS.turnIndex!==pIdx) return;
+    if(GS.turnIndex!==pIdx)return;
     const next=nextAliveName();
     addLog({type:'system',text:escH(player.name)+'のターン終了。→ '+escH(next)});
-    advanceTurn(); broadcastGS();
+    advanceTurn();broadcastGS();
   }
 
   if(action.type==='use_item'){
-    if(GS.turnIndex!==pIdx) return;
+    if(GS.turnIndex!==pIdx)return;
+    if(ts.cardUsed){guestConns[pid]?.send({type:'err',msg:'このターンはすでにカードを使いました'});return;}
     const card=player.hand.find(c=>c&&c.uid===action.cardUid);
-    if(!card||(card.type!=='item'&&!(card.type==='miracle'&&card.heal))) return;
+    if(!card||(card.type!=='item'&&!(card.type==='miracle'&&card.heal)))return;
+    if(card.mpCost&&player.mp<card.mpCost){
+      const m='MPが足りません';guestConns[pid]?.send({type:'err',msg:m});if(isHost&&pid===myId)toast(m);return;
+    }
+    if(card.mpCost)player.mp-=card.mpCost;
     player.hand=player.hand.filter(c=>!c||c.uid!==action.cardUid);
+    ts.cardUsed=true;
     let detail='';
-    if(card.heal){ player.hp=Math.min(INIT_HP,player.hp+card.heal); detail='+'+card.heal+' HP'; }
-    if(card.mp)  { player.mp=Math.min(99,player.mp+card.mp); detail='+'+card.mp+' MP'; }
-    if(card.gold){ player.gold+=card.gold; detail='+¥'+card.gold; }
+    if(card.heal){player.hp=Math.min(MAX_STAT,player.hp+card.heal);detail='+'+card.heal+' HP';}
+    if(card.mp)  {player.mp=Math.min(MAX_STAT,player.mp+card.mp);  detail='+'+card.mp+' MP';}
+    if(card.gold){player.gold=Math.min(MAX_STAT,player.gold+card.gold);detail='+¥'+card.gold;}
     addLog({type:'item',actor:player.name,card:card.name,emoji:card.emoji,detail});
-    setOppAction(card,detail);
+    replenishHand(player);
+    broadcastGS();
+  }
+
+  if(action.type==='discard'){
+    const card=player.hand.find(c=>c&&c.uid===action.cardUid);
+    if(!card)return;
+    player.hand=player.hand.filter(c=>!c||c.uid!==action.cardUid);
+    addLog({type:'system',text:escH(player.name)+'がカードを1枚捨てた。'});
     broadcastGS();
   }
 }
 
-// ---- DEF TIMER (HOST) ----
+// ---- REPLENISH ----
+function replenishHand(player,count){
+  // Draw 1 card to replace used card (or count if specified)
+  const n=count!==undefined?count:1;
+  for(let i=0;i<n;i++){
+    if(player.hand.length<MAX_HAND) player.hand.push(drawCard());
+  }
+  checkHandOverflow(player);
+}
+function checkHandOverflow(player){
+  // If hand > MAX_HAND, player must discard
+  // This is handled client-side via discard overlay
+}
+function checkDiscardNeeded(){
+  if(!GS||myPIdx<0)return;
+  const me=GS.players[myPIdx];
+  if(!me)return;
+  const hand=(me.hand||[]).filter(Boolean);
+  if(hand.length>MAX_HAND){
+    const need=hand.length-MAX_HAND;
+    showDiscardOverlay(hand,need);
+  } else {
+    document.getElementById('discard-overlay').classList.remove('active');
+  }
+}
+
+// ---- DISCARD OVERLAY ----
+function showDiscardOverlay(hand,need){
+  const ov=document.getElementById('discard-overlay');
+  document.getElementById('discard-count').textContent=need+'枚捨てる必要があります';
+  const wrap=document.getElementById('discard-hand');
+  wrap.innerHTML='';
+  hand.forEach(card=>{
+    const div=document.createElement('div');
+    div.className='card';
+    div.dataset.type=card.type;
+    div.style.cssText='width:66px;min-width:66px;height:88px;cursor:pointer;';
+    div.innerHTML=`<div class="card-icon" style="flex:1;display:flex;align-items:center;justify-content:center;font-size:1.8rem;">${card.emoji}</div><div class="card-footer" style="padding:.2rem .3rem;display:flex;align-items:center;justify-content:space-between;"><span class="card-stat" style="font-size:.6rem;">${cardStatStr(card)}</span></div>`;
+    div.title='捨てる: '+card.name;
+    div.onclick=()=>{
+      sendAction({type:'discard',cardUid:card.uid});
+      ov.classList.remove('active');
+    };
+    wrap.appendChild(div);
+  });
+  ov.classList.add('active');
+}
+
+// ---- DEF TIMER ----
 function startDefTimer(){
   clearDefTimerH();
-  defTimeout=setTimeout(()=>resolveAtk(null), DEF_WINDOW_MS);
+  defTimeout=setTimeout(()=>resolveAtk(null),DEF_WINDOW_MS);
 }
-function clearDefTimerH(){ if(defTimeout){clearTimeout(defTimeout);defTimeout=null;} }
+function clearDefTimerH(){if(defTimeout){clearTimeout(defTimeout);defTimeout=null;}}
 
 function resolveAtk(defCard){
   clearDefTimerH();
-  if(!pendingAtk) return;
+  if(!pendingAtk)return;
   const atk=GS.players.find(p=>p.peerId===pendingAtk.attackerId);
   const tgt=GS.players.find(p=>p.peerId===pendingAtk.targetId);
-  if(!atk||!tgt){ pendingAtk=null; return; }
+  if(!atk||!tgt){pendingAtk=null;return;}
 
-  let dmg=pendingAtk.damage, blocked=0, reflected=0;
+  let dmg=pendingAtk.damage;
+  let blocked=0,reflected=0;
+  const defTotal=pendingAtk.defStack||0;
+
   if(defCard){
-    if(defCard.def===999){ blocked=dmg; dmg=0; }
-    else if(defCard.reflect){ reflected=Math.floor(defCard.def/2); blocked=defCard.def; dmg=Math.max(0,dmg-defCard.def); atk.hp=Math.max(0,atk.hp-reflected); }
-    else { blocked=Math.min(defCard.def,dmg); dmg=Math.max(0,dmg-defCard.def); }
+    if(defCard.def===999){blocked=dmg;dmg=0;}
+    else if(defCard.reflect){
+      reflected=Math.floor(defTotal/2);
+      blocked=Math.min(defTotal,dmg);
+      dmg=Math.max(0,dmg-defTotal);
+      atk.hp=Math.max(0,atk.hp-reflected);
+    } else {
+      blocked=Math.min(defTotal,dmg);
+      dmg=Math.max(0,dmg-defTotal);
+    }
+  } else if(defTotal>0){
+    // Accumulated via add_def or multiple defense cards
+    blocked=Math.min(defTotal,dmg);
+    dmg=Math.max(0,dmg-defTotal);
   }
+
   tgt.hp=Math.max(0,tgt.hp-dmg);
-
-  const atkCard={emoji:pendingAtk.cardEmoji,name:pendingAtk.cardName};
   addLog({type:'attack',actor:atk.name,target:tgt.name,card:pendingAtk.cardName,emoji:pendingAtk.cardEmoji,dmg,blocked,reflected});
-  setOppAction(atkCard, '攻'+pendingAtk.damage+(blocked?` → 守${blocked}`:'')+` → ${dmg}ダメージ`);
-
   broadcastMsg({type:'atk_resolved',dmg,blocked,reflected,targetName:tgt.name});
-  clearDefWindow();
 
+  // Replenish attacker's hand
+  replenishHand(atk);
+
+  const savedPending=pendingAtk;
   pendingAtk=null;
+  GS.turnState.atkStack=0;
+
+  clearDefWindow();
   checkDeath(tgt);
-  if(reflected) checkDeath(atk);
-  broadcastGS(); checkVictory();
+  if(reflected)checkDeath(atk);
+  broadcastGS();checkVictory();
 }
 
-function checkDeath(p){
-  if(p.alive&&p.hp<=0){ p.alive=false; p.hp=0; addLog({type:'dead',name:p.name}); }
-}
+function checkDeath(p){if(p.alive&&p.hp<=0){p.alive=false;p.hp=0;addLog({type:'dead',name:p.name});}}
 function nextAliveName(){
-  let next=(GS.turnIndex+1)%GS.players.length, t=0;
+  let next=(GS.turnIndex+1)%GS.players.length,t=0;
   while(!GS.players[next].alive&&t<GS.players.length){next=(next+1)%GS.players.length;t++;}
   return GS.players[next]?.name||'—';
 }
 function advanceTurn(){
-  let next=(GS.turnIndex+1)%GS.players.length, t=0;
+  let next=(GS.turnIndex+1)%GS.players.length,t=0;
   while(!GS.players[next].alive&&t<GS.players.length){next=(next+1)%GS.players.length;t++;}
   GS.turnIndex=next;
-  GS.round=Math.floor(GS.players.filter(p=>p.alive).length>0?GS.round+(next===0?1:0):GS.round);
+  if(next===0)GS.round++;
+  GS.turnState={atkStack:0,defStack:0,cardUsed:false};
 }
 function checkVictory(){
   const alive=GS.players.filter(p=>p.alive);
   if(alive.length<=1){
-    GS.phase='over'; GS.winner=alive[0]?.name||null;
+    GS.phase='over';GS.winner=alive[0]?.name||null;
     addLog({type:'system',text:alive[0]?escH(alive[0].name)+'が予言の覇者となった！':'全員が倒れた。'});
-    broadcastGS(); showOver();
+    broadcastGS();showOver();
   }
 }
 
 // ---- DEF WINDOW (CLIENT) ----
 function showDefWindow(d){
+  pendingAtk=d;
   const win=document.getElementById('defense-window');
   const amTarget=GS.players[myPIdx]?.peerId===d.targetId;
   document.getElementById('def-text').innerHTML=
     `<span class="attacker">${escH(d.attackerName)}</span>が<strong>${escH(d.targetName)}</strong>に`+
-    `<span class="def-card-name">${d.cardEmoji} ${escH(d.cardName)}</span>で<strong style="color:var(--red2)">${d.damage}ダメージ</strong>の攻撃！`+
-    (amTarget?'<br><span style="color:var(--blue2)">防御カードを出して防げ！</span>':'');
+    `<strong style="color:#8030ae">${d.cardEmoji} ${escH(d.cardName)}</strong>で`+
+    `<strong style="color:var(--red2)">${d.damage}ダメージ</strong>の攻撃！`+
+    (amTarget?'<br><span style="color:var(--blue2)">防御カードを出せ！（重ね掛け可）</span>':'');
   win.classList.add('active');
   let secs=Math.ceil(DEF_WINDOW_MS/1000);
   document.getElementById('def-timer').textContent=secs;
-  if(defTimerInterval) clearInterval(defTimerInterval);
+  if(defTimerInterval)clearInterval(defTimerInterval);
   defTimerInterval=setInterval(()=>{
-    secs--; const e=document.getElementById('def-timer');
-    if(e) e.textContent=Math.max(0,secs);
-    if(secs<=0) clearInterval(defTimerInterval);
+    secs--;
+    const e=document.getElementById('def-timer');
+    if(e)e.textContent=Math.max(0,secs);
+    if(secs<=0)clearInterval(defTimerInterval);
   },1000);
-  if(amTarget) renderHand(GS.players[myPIdx], false);
+  if(amTarget){
+    const me=GS.players[myPIdx];
+    if(me){const isMyTurn=GS.players[GS.turnIndex]?.peerId===myId;renderHand(me,isMyTurn,GS.turnState||{});}
+  }
 }
-
 function clearDefWindow(){
   document.getElementById('defense-window').classList.remove('active');
-  if(defTimerInterval) clearInterval(defTimerInterval);
+  if(defTimerInterval)clearInterval(defTimerInterval);
   pendingAtk=null;
   const me=GS?.players?.[myPIdx];
   const isMyTurn=GS?.players?.[GS?.turnIndex]?.peerId===myId;
-  if(me) renderHand(me,isMyTurn);
+  if(me)renderHand(me,isMyTurn,GS?.turnState||{});
 }
-
-function submitDefense(uid){ sendAction({type:'defend',cardUid:uid}); clearDefWindow(); }
-
+function submitDefense(uid){sendAction({type:'defend',cardUid:uid});}
 function applyAtkResult(d){
-  if(d.dmg>0) floatDmg('-'+d.dmg,'#e74c3c');
-  else if(d.blocked) floatDmg('BLOCKED!','#5dade2');
+  if(d.dmg>0)floatDmg('-'+d.dmg,'#e74c3c');
+  else if(d.blocked)floatDmg('BLOCKED!','#5dade2');
 }
 
-// ---- OPP ACTION (「起こした奇跡」) ----
-function setOppAction(card,statStr){
-  document.getElementById('opp-icon').textContent=card.emoji||'—';
-  document.getElementById('opp-name').textContent=card.name||'—';
-  document.getElementById('opp-stat').textContent=statStr||'—';
+// ---- CHAT ----
+function sendChat(){
+  const inp=document.getElementById('chat-input');
+  const msg=inp.value.trim();
+  if(!msg)return;
+  inp.value='';
+  if(isHost){broadcastChat(myName,msg);}
+  else{hostConn?.send({type:'chat',name:myName,msg});}
+}
+function broadcastChat(name,msg){
+  addChatLine(name,msg);
+  broadcastMsg({type:'chat_msg',name,msg});
+}
+function addChatLine(name,msg){
+  addLog({type:'chat',author:name,msg});
 }
 
 // ---- LOG ----
-function addLog(e){ logEntries.push(e); if(logEntries.length>100) logEntries.shift(); renderLog(); }
-function renderLog(){
-  const el=document.getElementById('battle-log');
-  if(!el) return;
+function addLog(e){logEntries.push(e);if(logEntries.length>120)logEntries.shift();renderChatLog();}
+function renderChatLog(){
+  const el=document.getElementById('chat-log');
+  if(!el)return;
   const atBottom=el.scrollHeight-el.clientHeight<=el.scrollTop+40;
-  el.innerHTML=logEntries.map(logHTML).join('');
-  if(atBottom) el.scrollTop=el.scrollHeight;
+  el.innerHTML=logEntries.map(chatLineHTML).join('');
+  if(atBottom)el.scrollTop=el.scrollHeight;
 }
-function logHTML(e){
-  if(e.type==='system') return `<div class="log-line system">${e.text}</div>`;
+function chatLineHTML(e){
+  if(e.type==='system')return`<div class="chat-line system">${e.text}</div>`;
+  if(e.type==='chat')return`<div class="chat-line chat"><span class="chat-author">${escH(e.author)}</span>: ${escH(e.msg)}</div>`;
   if(e.type==='attack'){
-    const def=e.blocked?` <span style="color:var(--blue2)">（守${e.blocked}）</span>`:'';
-    const ref=e.reflected?` <span style="color:#9b59b6">（反射${e.reflected}）</span>`:'';
-    return `<div class="log-line attack"><span class="log-actor">${escH(e.actor)}</span>→<span class="log-target">${escH(e.target)}</span> <span class="log-card">${e.emoji||''} ${escH(e.card)}</span> <span class="log-val" style="color:var(--red2)">${e.dmg}ダメージ</span>${def}${ref}</div>`;
+    const def=e.blocked?`<span style="color:var(--blue2)">（守${e.blocked}）</span>`:'';
+    const ref=e.reflected?`<span style="color:#9b59b6">（反射${e.reflected}）</span>`:'';
+    return`<div class="chat-line attack"><span class="log-actor">${escH(e.actor)}</span>→<span class="log-target">${escH(e.target)}</span> <span class="log-card">${e.emoji||''} ${escH(e.card)}</span> <strong style="color:var(--red2)">${e.dmg}ダメ</strong>${def}${ref}</div>`;
   }
-  if(e.type==='item') return `<div class="log-line item"><span class="log-actor">${escH(e.actor)}</span> ${e.emoji||''} <span class="log-card">${escH(e.card)}</span>${e.detail?' — <span class="log-val">'+escH(e.detail)+'</span>':''}</div>`;
-  if(e.type==='dead') return `<div class="log-line dead">💀 ${escH(e.name)} は倒れた！</div>`;
-  return `<div class="log-line system">${escH(JSON.stringify(e))}</div>`;
+  if(e.type==='item')return`<div class="chat-line item"><span class="log-actor">${escH(e.actor)}</span> ${e.emoji||''}<span class="log-card">${escH(e.card)}</span>${e.detail?' <strong>'+escH(e.detail)+'</strong>':''}</div>`;
+  if(e.type==='dead')return`<div class="chat-line dead">💀 ${escH(e.name)} は倒れた！</div>`;
+  return`<div class="chat-line system">${escH(JSON.stringify(e))}</div>`;
 }
-function scrollLogBottom(){ const el=document.getElementById('battle-log'); if(el) el.scrollTop=el.scrollHeight; }
-function toggleLog(){} // placeholder
 
 // ---- GAME OVER ----
 function showOver(){
-  const ov=document.getElementById('overlay');
   const winner=GS?.winner;
   const iWon=winner&&GS.players[myPIdx]?.name===winner;
   document.getElementById('ov-title').textContent=iWon?'⚜ 勝利！':(winner?'敗北':'— 引き分け —');
   document.getElementById('ov-title').style.color=iWon?'var(--gold2)':'var(--red2)';
   document.getElementById('ov-sub').textContent=winner?winner+'が次なる神となった。':'予言は終わりを告げた。';
-  ov.classList.add('active');
+  document.getElementById('overlay').classList.add('active');
 }
 
-// ---- FLOAT DMG ----
+// ---- FLOAT ----
 function floatDmg(txt,color){
   const el=document.createElement('div');
-  el.className='float-dmg';
-  el.textContent=txt; el.style.color=color;
+  el.className='float-dmg'; el.textContent=txt; el.style.color=color;
   el.style.left=(window.innerWidth/2-30+Math.random()*60)+'px';
-  el.style.top=(window.innerHeight*0.5+Math.random()*30)+'px';
+  el.style.top=(window.innerHeight*.5+Math.random()*30)+'px';
   document.body.appendChild(el);
   setTimeout(()=>el.remove(),1300);
 }
@@ -1523,11 +1452,12 @@ function floatDmg(txt,color){
 function leaveRoom(){
   clearDefTimerH();
   if(peer){peer.destroy();peer=null;}
-  hostConn=null; guestConns={};
-  GS=null; logEntries=[];
-  selCardUid=null; selectedCardData=null; pendingAtk=null;
-  myPIdx=-1; myId=null; isHost=false;
+  hostConn=null;guestConns={};
+  GS=null;logEntries=[];
+  selCardUid=null;selectedTargetId=null;pendingAtk=null;
+  myPIdx=-1;myId=null;isHost=false;
   document.getElementById('overlay').classList.remove('active');
+  document.getElementById('discard-overlay').classList.remove('active');
   showScreen('screen-lobby');
   setStatus('Awaiting the call of fate...');
 }
