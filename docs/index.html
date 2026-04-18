@@ -127,69 +127,99 @@ input[type=text]::placeholder { color:#aaa; }
 .g-title { font-size:.85rem; font-weight:800; }
 .gf-badge { background:var(--gold2); color:#4a3000; font-size:.7rem; font-weight:800;
   padding:.15rem .6rem; border-radius:20px; }
+.header-turn {
+  position:absolute; left:50%; transform:translateX(-50%);
+  background:rgba(255,255,255,.15); border:1.5px solid rgba(255,255,255,.3);
+  border-radius:20px; padding:.2rem 1.2rem;
+  font-size:.8rem; font-weight:800; color:#fff; white-space:nowrap;
+  pointer-events:none;
+}
+.header-turn.my-turn {
+  background:rgba(240,192,48,.35); border-color:var(--gold2); color:var(--gold2);
+  animation:turnPulse 1s ease-in-out infinite;
+}
+@keyframes turnPulse { 0%,100%{opacity:1}50%{opacity:.6} }
 .header-btn { background:rgba(255,255,255,.18); border:none; color:#fff;
   font-family:inherit; font-size:.7rem; font-weight:700; padding:.25rem .7rem;
   border-radius:6px; cursor:pointer; transition:background .15s; }
 .header-btn:hover { background:rgba(255,255,255,.3); }
 
-/* ---- GAME BODY: 3 columns ---- */
-/*
-  Left  : card-play zone (active card + atk value)
-  Center: target select + hand
-  Right : player list
-*/
+/* ---- GAME BODY ---- */
 .g-body {
   flex:1; display:grid;
-  grid-template-columns: 200px 1fr 240px;
-  grid-template-rows: 1fr;
+  grid-template-columns: 1fr 240px;
   overflow:hidden; min-height:0;
 }
 
-/* ===== LEFT ZONE ===== */
+/* Center wrap: left-half (use) + right-half (defense) */
+.g-center-wrap {
+  display:grid; grid-template-columns:1fr 1fr;
+  overflow:hidden; min-height:0;
+  border-right:2px solid var(--border2);
+}
+
+/* LEFT HALF: use card */
 .g-left {
   background:var(--bg2);
   border-right:2px solid var(--border2);
-  display:flex; flex-direction:column;
-  overflow:hidden;
+  display:flex; flex-direction:column; overflow:hidden;
 }
-
-/* Used-card display (only visible to self) */
 .used-card-zone {
-  flex:1;
-  display:flex; flex-direction:column;
+  flex:1; display:flex; flex-direction:column;
   align-items:center; justify-content:center;
-  padding:.6rem;
-  gap:.5rem;
+  padding:.6rem; gap:.4rem;
+  cursor:pointer; transition:background .15s;
 }
-.used-card-label { font-size:.6rem; font-weight:700; color:rgba(255,255,255,.6);
-  letter-spacing:.15em; text-transform:uppercase; }
+.used-card-zone:hover { background:rgba(255,255,255,.06); }
+.used-card-zone.pray-available { cursor:pointer; }
+.used-card-zone.pray-available:hover { background:rgba(240,192,48,.14); }
+.used-card-label { font-size:.58rem; font-weight:700; color:rgba(255,255,255,.6);
+  letter-spacing:.12em; text-transform:uppercase; pointer-events:none; }
+.used-card-hint { font-size:.56rem; color:rgba(240,192,48,.8); font-weight:700;
+  text-align:center; pointer-events:none; }
 .used-card-slot {
-  width:90px; height:126px;
-  border:2px dashed rgba(255,255,255,.3);
-  border-radius:10px;
+  width:100px; height:140px;
+  border:2px dashed rgba(255,255,255,.3); border-radius:10px;
   display:flex; flex-direction:column; align-items:center; justify-content:center;
-  background:rgba(255,255,255,.08);
-  transition:all .2s;
+  background:rgba(255,255,255,.08); transition:all .2s; pointer-events:none;
 }
-.used-card-slot.filled {
-  border-style:solid; border-color:rgba(255,255,255,.5);
-  background:rgba(255,255,255,.15);
-}
-.used-card-emoji { font-size:2.8rem; line-height:1; }
+.used-card-slot.filled { border-style:solid; border-color:rgba(255,255,255,.5); background:rgba(255,255,255,.15); }
+.used-card-emoji { font-size:3rem; line-height:1; }
 .used-card-name  { font-size:.65rem; font-weight:700; color:#fff; text-align:center; margin-top:.3rem; }
-
-/* ATK value bottom-left */
 .atk-display {
-  background:rgba(0,0,0,.25);
-  border-top:2px solid rgba(255,255,255,.2);
-  padding:.5rem .8rem;
-  font-size:1.1rem; font-weight:800; color:#fff;
-  text-align:center; flex-shrink:0;
-  min-height:42px;
+  background:rgba(0,0,0,.25); border-top:2px solid rgba(255,255,255,.2);
+  padding:.5rem .8rem; font-size:1.1rem; font-weight:800; color:#fff;
+  text-align:center; flex-shrink:0; min-height:42px;
 }
 .atk-display span { color:var(--gold2); }
 
-/* ===== CENTER ZONE ===== */
+/* RIGHT HALF: defense card */
+.g-right-half {
+  background:rgba(52,152,219,.07);
+  display:flex; flex-direction:column; overflow:hidden;
+}
+.def-card-zone {
+  flex:1; display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  padding:.6rem; gap:.4rem;
+}
+.def-card-label { font-size:.58rem; font-weight:700; color:rgba(93,173,226,.75);
+  letter-spacing:.12em; text-transform:uppercase; }
+.def-card-slot {
+  width:100px; height:140px;
+  border:2px dashed rgba(93,173,226,.4); border-radius:10px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  background:rgba(93,173,226,.06); transition:all .2s;
+}
+.def-card-slot.filled { border-style:solid; border-color:rgba(93,173,226,.7); background:rgba(93,173,226,.14); }
+.def-val-display {
+  background:rgba(0,0,0,.2); border-top:2px solid rgba(93,173,226,.3);
+  padding:.5rem .8rem; font-size:1.1rem; font-weight:800; color:var(--blue2);
+  text-align:center; flex-shrink:0; min-height:42px;
+}
+.def-val-display span { color:#7ec8f0; }
+
+/* ===== CENTER ZONE (chat+hand) ===== */
 .g-center {
   display:flex; flex-direction:column; overflow:hidden;
   background:var(--bg);
@@ -378,7 +408,6 @@ input[type=text]::placeholder { color:#aaa; }
 /* ===== RIGHT ZONE: Player list ===== */
 .g-right {
   background:var(--surface);
-  border-left:2px solid var(--border2);
   display:flex; flex-direction:column;
   overflow:hidden;
 }
@@ -539,11 +568,12 @@ input[type=text]::placeholder { color:#aaa; }
 
 <!-- ===== GAME ===== -->
 <div id="screen-game" class="screen">
-  <div class="g-header">
+  <div class="g-header" style="position:relative;">
     <div style="display:flex;align-items:center;gap:.5rem;">
       <span class="g-title" id="g-room-title">隠れ乱闘</span>
       <span class="gf-badge" id="gf-badge">G.F.1</span>
     </div>
+    <div class="header-turn" id="header-turn">—</div>
     <div style="display:flex;gap:.4rem;">
       <button class="header-btn" onclick="leaveRoom()">← Leave</button>
     </div>
@@ -551,29 +581,45 @@ input[type=text]::placeholder { color:#aaa; }
 
   <div class="g-body">
 
-    <!-- LEFT: used card + atk value -->
-    <div class="g-left">
-      <div class="used-card-zone">
-        <div class="used-card-label">使用カード</div>
-        <div class="used-card-slot" id="used-card-slot">
-          <div style="color:rgba(255,255,255,.3);font-size:.7rem;">なし</div>
+    <!-- CENTER WRAP: left=use card, right=defense card, then chat+hand below -->
+    <div style="display:flex;flex-direction:column;overflow:hidden;border-right:2px solid var(--border2);">
+
+      <!-- Top half: use card (left) + defense card (right) + target row -->
+      <div style="display:flex;flex-direction:column;overflow:hidden;">
+        <!-- Target row -->
+        <div class="target-zone">
+          <span class="target-zone-label">ターゲット</span>
+          <div class="target-btns" id="target-btns">—</div>
         </div>
-      </div>
-      <div class="atk-display" id="atk-display">攻撃値: <span>—</span></div>
-    </div>
-
-    <!-- CENTER: target + defense + chat + hand -->
-    <div class="g-center">
-      <!-- Target select zone -->
-      <div class="target-zone">
-        <span class="target-zone-label">ターゲット</span>
-        <div class="target-btns" id="target-btns">—</div>
-      </div>
-
-      <!-- Defense window -->
-      <div class="defense-window" id="defense-window">
-        <div class="def-text" id="def-text">—</div>
-        <div class="def-timer-circle" id="def-timer">4</div>
+        <!-- Defense window -->
+        <div class="defense-window" id="defense-window">
+          <div class="def-text" id="def-text">—</div>
+          <div class="def-timer-circle" id="def-timer">4</div>
+        </div>
+        <!-- Card display row -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;flex-shrink:0;border-bottom:2px solid var(--border2);">
+          <!-- Left: use card slot -->
+          <div class="g-left">
+            <div class="used-card-zone" id="used-card-zone" onclick="onUsedZoneClick()">
+              <div class="used-card-label">使用カード</div>
+              <div class="used-card-slot" id="used-card-slot">
+                <div style="color:rgba(255,255,255,.3);font-size:.7rem;pointer-events:none;">なし</div>
+              </div>
+              <div class="used-card-hint" id="used-card-hint"></div>
+            </div>
+            <div class="atk-display" id="atk-display">攻撃値: <span>—</span></div>
+          </div>
+          <!-- Right: defense card slot -->
+          <div class="g-right-half">
+            <div class="def-card-zone">
+              <div class="def-card-label">防御カード</div>
+              <div class="def-card-slot" id="def-card-slot">
+                <div style="color:rgba(93,173,226,.3);font-size:.7rem;">なし</div>
+              </div>
+            </div>
+            <div class="def-val-display" id="def-val-display">守備値: <span>—</span></div>
+          </div>
+        </div>
       </div>
 
       <!-- Chat log -->
@@ -585,7 +631,7 @@ input[type=text]::placeholder { color:#aaa; }
         </div>
       </div>
 
-      <!-- My area -->
+      <!-- My hand area -->
       <div class="my-area">
         <div class="my-stat-bar">
           <span class="my-name" id="my-name-label">—</span>
@@ -600,18 +646,14 @@ input[type=text]::placeholder { color:#aaa; }
         </div>
         <div class="action-row">
           <button class="act-btn act-attack" id="btn-attack" onclick="doPlay()">⚔ 使用</button>
-          <button class="act-btn act-pray"   id="btn-pray"   onclick="doPray()">🙏 祈る</button>
-          <button class="act-btn act-end"    id="btn-end"    onclick="doEnd()">↩ ターン終了</button>
-          <button class="act-btn act-def"    id="btn-def"    onclick="doStackDef()" style="display:none;">🛡 防御追加</button>
         </div>
       </div>
     </div>
 
-    <!-- RIGHT: player list + def value -->
+    <!-- RIGHT: player list -->
     <div class="g-right">
       <div class="right-header">⚔ 預言者一覧</div>
       <div class="player-scroll" id="player-scroll"></div>
-      <div class="def-value-display" id="def-value-display">守備値: <span id="def-val-span">0</span></div>
     </div>
 
   </div><!-- /g-body -->
@@ -874,6 +916,11 @@ function renderGame(){
   const isMyTurn=turnP?.peerId===myId;
   const ts=GS.turnState||{};
 
+  // Header turn indicator
+  const htEl=document.getElementById('header-turn');
+  htEl.textContent=isMyTurn?'⚡ あなたのターン':turnP?.name+"'s turn";
+  htEl.className='header-turn'+(isMyTurn?' my-turn':'');
+
   document.getElementById('gf-badge').textContent='G.F.'+GS.round;
   document.getElementById('g-room-title').textContent=roomName||'隠れ乱闘';
   document.getElementById('my-name-label').textContent=me.name;
@@ -885,36 +932,27 @@ function renderGame(){
 
   // ATK display (left bottom)
   const atkEl=document.getElementById('atk-display');
-  if(ts.atkStack>0){
-    atkEl.innerHTML='攻撃値: <span>'+ts.atkStack+'</span>';
-  } else {
-    atkEl.innerHTML='攻撃値: <span>—</span>';
-  }
+  atkEl.innerHTML=ts.atkStack>0?'攻撃値: <span>'+ts.atkStack+'</span>':'攻撃値: <span>—</span>';
 
-  // DEF display (right bottom) — only when defending stacks are active
-  const defEl=document.getElementById('def-value-display');
-  const defSpan=document.getElementById('def-val-span');
-  if(ts.defStack>0&&isMyTurn){
-    defEl.classList.add('active');
-    defSpan.textContent=ts.defStack;
-  } else {
-    defEl.classList.remove('active');
-  }
+  // DEF display (right bottom)
+  const defValEl=document.getElementById('def-val-display');
+  defValEl.innerHTML=ts.defStack>0?'守備値: <span>'+ts.defStack+'</span>':'守備値: <span>—</span>';
+
+  // Pray hint on used-card zone
+  const zone=document.getElementById('used-card-zone');
+  const hintEl=document.getElementById('used-card-hint');
+  const hand=(me.hand||[]).filter(Boolean);
+  const hasAtk=hand.some(c=>c.type==='attack'||(c.type==='miracle'&&(c.atk||c.aoe||c.drain)));
+  const canPray=isMyTurn&&!ts.cardUsed&&!hasAtk;
+  if(canPray){zone.classList.add('pray-available');hintEl.textContent='🙏 クリックで祈る';}
+  else{zone.classList.remove('pray-available');hintEl.textContent='';}
 
   renderPlayerList();
   renderFooterPlayers();
   renderHand(me,isMyTurn,ts);
   renderTargetBtns(isMyTurn);
 
-  // Action buttons
   document.getElementById('btn-attack').disabled=!isMyTurn||!selCardUid;
-  document.getElementById('btn-pray').disabled=!isMyTurn||ts.cardUsed;
-  document.getElementById('btn-end').disabled=!isMyTurn;
-  // Show defense stack button if defense cards selected and it's my turn
-  const btnDef=document.getElementById('btn-def');
-  btnDef.style.display='none'; // managed per card selection
-
-  renderChatLog();
 }
 
 function renderPlayerList(){
@@ -1045,15 +1083,46 @@ function updateUsedCardDisplay(card){
   const atkEl=document.getElementById('atk-display');
   if(!card){
     slot.classList.remove('filled');
-    slot.innerHTML='<div style="color:rgba(255,255,255,.3);font-size:.7rem;">なし</div>';
+    slot.innerHTML='<div style="color:rgba(255,255,255,.3);font-size:.7rem;pointer-events:none;">なし</div>';
+    atkEl.innerHTML='攻撃値: <span>—</span>';
     return;
   }
   slot.classList.add('filled');
-  slot.innerHTML=`<div class="used-card-emoji">${card.emoji}</div><div class="used-card-name">${escH(card.name)}</div>`;
-  if(card.atk){
+  slot.innerHTML=`<div class="used-card-emoji" style="pointer-events:none">${card.emoji}</div><div class="used-card-name" style="pointer-events:none">${escH(card.name)}</div>`;
+  if(card.atk||card.aoe||card.drain){
     const ts=GS?.turnState||{};
-    atkEl.innerHTML='攻撃値: <span>'+(ts.atkStack+card.atk)+'</span>';
+    atkEl.innerHTML='攻撃値: <span>'+(ts.atkStack+(card.atk||card.aoe||card.drain||0))+'</span>';
   }
+}
+
+function updateDefCardDisplay(card){
+  const slot=document.getElementById('def-card-slot');
+  const valEl=document.getElementById('def-val-display');
+  if(!card){
+    slot.classList.remove('filled');
+    slot.innerHTML='<div style="color:rgba(93,173,226,.3);font-size:.7rem;">なし</div>';
+    valEl.innerHTML='守備値: <span>—</span>';
+    return;
+  }
+  slot.classList.add('filled');
+  const defVal=card.def===999?'回避':card.def;
+  slot.innerHTML=`<div style="font-size:3rem;line-height:1">${card.emoji}</div><div style="font-size:.65rem;font-weight:700;color:var(--blue2);text-align:center;margin-top:.3rem">${escH(card.name)}</div>`;
+  valEl.innerHTML='守備値: <span>'+(card.def===999?'∞':card.def)+'</span>';
+}
+
+// ---- PRAY VIA ZONE CLICK ----
+function onUsedZoneClick(){
+  if(!GS)return;
+  const isMyTurn=GS.players[GS.turnIndex]?.peerId===myId;
+  if(!isMyTurn)return;
+  const ts=GS.turnState||{};
+  if(ts.cardUsed)return;
+  const me=GS.players[myPIdx];
+  if(!me)return;
+  const hand=(me.hand||[]).filter(Boolean);
+  const hasAtk=hand.some(c=>c.type==='attack'||(c.type==='miracle'&&(c.atk||c.aoe||c.drain)));
+  if(hasAtk){toast('攻撃カードがあるので祈れません');return;}
+  sendAction({type:'pray'});
 }
 
 // ---- ACTIONS ----
@@ -1068,30 +1137,26 @@ function doPlay(){
   const card=me?.hand?.find(c=>c&&c.uid===selCardUid);
   if(!card)return;
 
-  // Item / healing miracle: no target needed
   if(card.type==='item'||(card.type==='miracle'&&card.heal)){
     sendAction({type:'use_item',cardUid:selCardUid});
-    selCardUid=null; updateUsedCardDisplay(null); return;
+    selCardUid=null;updateUsedCardDisplay(null);return;
   }
-  // +攻撃 stacking
   if(card.addAtk){
     sendAction({type:'add_atk',cardUid:selCardUid});
-    selCardUid=null; updateUsedCardDisplay(null); return;
+    selCardUid=null;updateUsedCardDisplay(null);return;
   }
-  // +守備 stacking
   if(card.addDef){
     sendAction({type:'add_def',cardUid:selCardUid});
-    selCardUid=null; updateUsedCardDisplay(null); return;
+    selCardUid=null;updateUsedCardDisplay(null);return;
   }
-  // AOE miracle (no target)
   if(card.aoe){
     sendAction({type:'attack',cardUid:selCardUid,targetId:null});
-    selCardUid=null; updateUsedCardDisplay(null); return;
+    selCardUid=null;updateUsedCardDisplay(null);return;
   }
   const targetId=selectedTargetId;
   if(!targetId){toast('ターゲットを選んでください');return;}
   sendAction({type:'attack',cardUid:selCardUid,targetId});
-  selCardUid=null; updateUsedCardDisplay(null);
+  selCardUid=null;updateUsedCardDisplay(null);
 }
 
 function doPray(){sendAction({type:'pray'});}
@@ -1155,7 +1220,7 @@ function processAction(pid,action){
     ts.atkStack+=(card.atk||0);
     addLog({type:'system',text:escH(player.name)+'が'+escH(card.name)+'を積んだ。攻撃値+'+card.atk+'（合計'+ts.atkStack+'）'});
     replenishHand(player,1);
-    broadcastGS();
+    broadcastGS(); // +攻撃は次の攻撃と合わせるのでターン終了しない
   }
 
   if(action.type==='add_def'){
@@ -1166,7 +1231,7 @@ function processAction(pid,action){
     ts.defStack+=(card.def||0);
     addLog({type:'system',text:escH(player.name)+'が'+escH(card.name)+'を積んだ。守備値+'+card.def+'（合計'+ts.defStack+'）'});
     replenishHand(player,1);
-    broadcastGS();
+    broadcastGS(); // +守備もターン終了しない（次の攻撃を待つ）
   }
 
   if(action.type==='defend'){
@@ -1216,7 +1281,7 @@ function processAction(pid,action){
     if(card.gold){player.gold=Math.min(MAX_STAT,player.gold+card.gold);detail='+¥'+card.gold;}
     addLog({type:'item',actor:player.name,card:card.name,emoji:card.emoji,detail});
     replenishHand(player);
-    broadcastGS();
+    advanceTurn();broadcastGS();
   }
 
   if(action.type==='discard'){
@@ -1379,11 +1444,17 @@ function clearDefWindow(){
   document.getElementById('defense-window').classList.remove('active');
   if(defTimerInterval)clearInterval(defTimerInterval);
   pendingAtk=null;
+  updateDefCardDisplay(null);
   const me=GS?.players?.[myPIdx];
   const isMyTurn=GS?.players?.[GS?.turnIndex]?.peerId===myId;
   if(me)renderHand(me,isMyTurn,GS?.turnState||{});
 }
-function submitDefense(uid){sendAction({type:'defend',cardUid:uid});}
+function submitDefense(uid){
+  const me=GS?.players?.[myPIdx];
+  const card=me?.hand?.find(c=>c&&c.uid===uid);
+  if(card)updateDefCardDisplay(card);
+  sendAction({type:'defend',cardUid:uid});
+}
 function applyAtkResult(d){
   if(d.dmg>0)floatDmg('-'+d.dmg,'#e74c3c');
   else if(d.blocked)floatDmg('BLOCKED!','#5dade2');
