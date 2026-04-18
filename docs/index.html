@@ -196,8 +196,9 @@ input[type=text]::placeholder { color:#aaa; }
 /* RIGHT HALF: defense card */
 .g-right-half {
   background:rgba(52,152,219,.07);
-  display:flex; flex-direction:column; overflow:hidden;
+  display:none; flex-direction:column; overflow:hidden;
 }
+.g-right-half.active { display:flex; }
 .def-card-zone {
   flex:1; display:flex; flex-direction:column;
   align-items:center; justify-content:center;
@@ -256,13 +257,21 @@ input[type=text]::placeholder { color:#aaa; }
 .defense-window.active { display:flex; }
 .def-text { flex:1; font-size:.8rem; font-weight:700; line-height:1.5; }
 .def-text .attacker { color:var(--red2); font-weight:800; }
-.def-timer-circle {
-  width:40px; height:40px; border-radius:50%;
-  background:var(--blue2); color:#fff;
-  display:flex; align-items:center; justify-content:center;
-  font-size:1.2rem; font-weight:800; flex-shrink:0;
-  box-shadow:0 2px 8px rgba(52,152,219,.4);
+.def-confirm-btn {
+  font-family:inherit; font-size:.75rem; font-weight:800;
+  background:var(--blue2); color:#fff; border:none;
+  border-radius:8px; padding:.4rem .9rem; cursor:pointer;
+  box-shadow:0 2px 0 #1a60a0; flex-shrink:0; white-space:nowrap;
+  transition:background .15s;
 }
+.def-confirm-btn:hover { background:var(--blue); }
+.def-skip-btn {
+  font-family:inherit; font-size:.7rem; font-weight:700;
+  background:rgba(0,0,0,.15); color:rgba(255,255,255,.7); border:none;
+  border-radius:8px; padding:.4rem .7rem; cursor:pointer; flex-shrink:0;
+  transition:background .15s;
+}
+.def-skip-btn:hover { background:rgba(0,0,0,.25); }
 
 /* DEF stacked display (bottom-left of center when defending) */
 .def-stack-display {
@@ -594,11 +603,14 @@ input[type=text]::placeholder { color:#aaa; }
         <!-- Defense window -->
         <div class="defense-window" id="defense-window">
           <div class="def-text" id="def-text">—</div>
-          <div class="def-timer-circle" id="def-timer">4</div>
+          <div style="display:flex;flex-direction:column;gap:.4rem;flex-shrink:0;">
+            <button class="def-confirm-btn" onclick="confirmDefense()">🛡 防御確定</button>
+            <button class="def-skip-btn"    onclick="skipDefense()">スキップ</button>
+          </div>
         </div>
         <!-- Card display row -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;flex-shrink:0;border-bottom:2px solid var(--border2);">
-          <!-- Left: use card slot -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;flex-shrink:0;border-bottom:2px solid var(--border2);" id="card-display-row">
+          <!-- Left: use card slot (click = use selected card or pray) -->
           <div class="g-left">
             <div class="used-card-zone" id="used-card-zone" onclick="onUsedZoneClick()">
               <div class="used-card-label">使用カード</div>
@@ -609,10 +621,10 @@ input[type=text]::placeholder { color:#aaa; }
             </div>
             <div class="atk-display" id="atk-display">攻撃値: <span>—</span></div>
           </div>
-          <!-- Right: defense card slot -->
-          <div class="g-right-half">
+          <!-- Right: defense card slot (hidden until attack incoming) -->
+          <div class="g-right-half" id="g-right-half">
             <div class="def-card-zone">
-              <div class="def-card-label">防御カード</div>
+              <div class="def-card-label">防御カード（複数可）</div>
               <div class="def-card-slot" id="def-card-slot">
                 <div style="color:rgba(93,173,226,.3);font-size:.7rem;">なし</div>
               </div>
@@ -644,9 +656,7 @@ input[type=text]::placeholder { color:#aaa; }
           <div class="hand-row" id="hand-row-1"></div>
           <div class="hand-row" id="hand-row-2"></div>
         </div>
-        <div class="action-row">
-          <button class="act-btn act-attack" id="btn-attack" onclick="doPlay()">⚔ 使用</button>
-        </div>
+        <div class="action-row" id="action-row" style="display:none;"></div>
       </div>
     </div>
 
@@ -844,6 +854,11 @@ function guestRecv(d){
   if(d.type==='err') toast(d.msg);
   if(d.type==='atk_window'){pendingAtk=d;showDefWindow(d);}
   if(d.type==='atk_resolved'){clearDefWindow();applyAtkResult(d);}
+  if(d.type==='def_update'){
+    // Show accumulating defense value on the defense display
+    const valEl=document.getElementById('def-val-display');
+    if(valEl)valEl.innerHTML='守備値: <span>'+(d.defStack===999?'∞':d.defStack)+'</span>';
+  }
   if(d.type==='chat_msg') addChatLine(d.name,d.msg);
 }
 
@@ -1110,13 +1125,21 @@ function updateDefCardDisplay(card){
   valEl.innerHTML='守備値: <span>'+(card.def===999?'∞':card.def)+'</span>';
 }
 
-// ---- PRAY VIA ZONE CLICK ----
+// ---- USED ZONE CLICK: use selected card or pray ----
 function onUsedZoneClick(){
   if(!GS)return;
   const isMyTurn=GS.players[GS.turnIndex]?.peerId===myId;
   if(!isMyTurn)return;
   const ts=GS.turnState||{};
-  if(ts.cardUsed)return;
+
+  // If a card is selected, use it
+  if(selCardUid){
+    doPlay();
+    return;
+  }
+
+  // No card selected → try to pray
+  if(ts.cardUsed){toast('このターンはすでにアクションを行いました');return;}
   const me=GS.players[myPIdx];
   if(!me)return;
   const hand=(me.hand||[]).filter(Boolean);
@@ -1241,10 +1264,17 @@ function processAction(pid,action){
     if(!defCard||defCard.type!=='defense')return;
     tgt.hand=tgt.hand.filter(c=>!c||c.uid!==action.cardUid);
     pendingAtk.defStack=(pendingAtk.defStack||0)+(defCard.def===999?999:defCard.def);
+    if(defCard.reflect)pendingAtk.reflected=true;
+    if(defCard.def===999)pendingAtk.dodged=true;
     pendingAtk.lastDefCard=defCard;
-    // Defense is stackable: update window but keep it open for more
-    // Actually resolve immediately for simplicity (can stack via multiple defend actions before timer)
-    resolveAtk(defCard);
+    // Broadcast updated defStack so attacker sees it building
+    broadcastMsg({type:'def_update',defStack:pendingAtk.defStack});
+    broadcastGS();
+  }
+
+  if(action.type==='resolve_defense'){
+    if(!pendingAtk||pendingAtk.targetId!==pid)return;
+    resolveAtk(pendingAtk.lastDefCard||null);
   }
 
   if(action.type==='pray'){
@@ -1341,12 +1371,31 @@ function showDiscardOverlay(hand,need){
   ov.classList.add('active');
 }
 
-// ---- DEF TIMER ----
+// ---- DEF TIMER (HOST) — now no auto-resolve, wait for confirm ----
 function startDefTimer(){
-  clearDefTimerH();
-  defTimeout=setTimeout(()=>resolveAtk(null),DEF_WINDOW_MS);
+  clearDefTimerH(); // no-op now, kept for compatibility
 }
 function clearDefTimerH(){if(defTimeout){clearTimeout(defTimeout);defTimeout=null;}}
+
+// Called when target clicks "防御確定"
+function confirmDefense(){
+  if(!pendingAtk)return;
+  const amTarget=GS.players[myPIdx]?.peerId===pendingAtk.targetId;
+  if(!amTarget)return;
+  // Send accumulated defense cards (already sent one by one via submitDefense)
+  // Now tell host to resolve with current defStack
+  sendAction({type:'resolve_defense'});
+  clearDefWindow();
+}
+
+// Called when target clicks "スキップ"
+function skipDefense(){
+  if(!pendingAtk)return;
+  const amTarget=GS.players[myPIdx]?.peerId===pendingAtk.targetId;
+  if(!amTarget)return;
+  sendAction({type:'resolve_defense'});
+  clearDefWindow();
+}
 
 function resolveAtk(defCard){
   clearDefTimerH();
@@ -1424,24 +1473,27 @@ function showDefWindow(d){
     `<span class="attacker">${escH(d.attackerName)}</span>が<strong>${escH(d.targetName)}</strong>に`+
     `<strong style="color:#8030ae">${d.cardEmoji} ${escH(d.cardName)}</strong>で`+
     `<strong style="color:var(--red2)">${d.damage}ダメージ</strong>の攻撃！`+
-    (amTarget?'<br><span style="color:var(--blue2)">防御カードを出せ！（重ね掛け可）</span>':'');
+    (amTarget?'<br><span style="color:var(--blue2)">防御カードを選んで「防御確定」を押せ！（複数可）</span>':'');
+
+  // Show/hide confirm buttons based on whether I'm the target
+  const confirmBtn=win.querySelector('.def-confirm-btn');
+  const skipBtn=win.querySelector('.def-skip-btn');
+  if(confirmBtn) confirmBtn.style.display=amTarget?'':'none';
+  if(skipBtn)    skipBtn.style.display=amTarget?'':'none';
+
   win.classList.add('active');
-  let secs=Math.ceil(DEF_WINDOW_MS/1000);
-  document.getElementById('def-timer').textContent=secs;
-  if(defTimerInterval)clearInterval(defTimerInterval);
-  defTimerInterval=setInterval(()=>{
-    secs--;
-    const e=document.getElementById('def-timer');
-    if(e)e.textContent=Math.max(0,secs);
-    if(secs<=0)clearInterval(defTimerInterval);
-  },1000);
+
+  // Show defense zone only for target
   if(amTarget){
+    document.getElementById('g-right-half').classList.add('active');
+    updateDefCardDisplay(null); // clear previous
     const me=GS.players[myPIdx];
     if(me){const isMyTurn=GS.players[GS.turnIndex]?.peerId===myId;renderHand(me,isMyTurn,GS.turnState||{});}
   }
 }
 function clearDefWindow(){
   document.getElementById('defense-window').classList.remove('active');
+  document.getElementById('g-right-half').classList.remove('active');
   if(defTimerInterval)clearInterval(defTimerInterval);
   pendingAtk=null;
   updateDefCardDisplay(null);
@@ -1452,7 +1504,21 @@ function clearDefWindow(){
 function submitDefense(uid){
   const me=GS?.players?.[myPIdx];
   const card=me?.hand?.find(c=>c&&c.uid===uid);
-  if(card)updateDefCardDisplay(card);
+  if(card){
+    // Append emoji to defense slot display (stack multiple)
+    const slot=document.getElementById('def-card-slot');
+    const valEl=document.getElementById('def-val-display');
+    if(slot){
+      if(!slot.classList.contains('filled')){
+        slot.classList.add('filled');
+        slot.innerHTML='';
+      }
+      const span=document.createElement('div');
+      span.style.cssText='font-size:2rem;line-height:1;text-align:center;';
+      span.textContent=card.emoji;
+      slot.appendChild(span);
+    }
+  }
   sendAction({type:'defend',cardUid:uid});
 }
 function applyAtkResult(d){
